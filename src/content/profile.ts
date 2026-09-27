@@ -96,7 +96,7 @@ export const profile = {
 
   // Repos a destacar primero (nombre exacto en GitHub, pueden ser forks como "caruflo-server").
   // Si está vacío, se muestran tus repos propios más recientes.
-  featuredRepos: [] as string[],
+  featuredRepos: ["portafolio"] as string[],
 };
 
 export type Profile = typeof profile;
