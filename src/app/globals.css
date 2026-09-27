@@ -1,0 +1,382 @@
+@import "tailwindcss";
+
+/* ---------- Temas ----------
+   Oscuro es el predeterminado. El claro se activa con <html data-theme="light">
+   (lo maneja ThemeToggle y se recuerda en localStorage). */
+:root {
+  --bg: #0f0f10;
+  --surface: #18181a;
+  --ink: #f3f1ec;
+  --ink-2: #c4c1b8;
+  --muted: #8f8b83;
+  --line: #26262a;
+  --line-strong: #37373c;
+  --accent: #7c9dff;
+  --accent-ink: #0f0f10;
+  --accent-soft: #1a2240;
+  --warm: #e0946b;
+  --warm-soft: #2c1f18;
+  --chart: #3987e5;
+  --chart-soft: rgba(57, 135, 229, 0.16);
+  --good: #34c46b;
+  --bad: #e66767;
+  --wash: rgba(124, 157, 255, 0.09);
+  color-scheme: dark;
+}
+
+/* Claro: crema cálido y tranquilo, sin blancos puros */
+:root[data-theme="light"] {
+  --bg: #f2ede3;
+  --surface: #f8f4ec;
+  --ink: #2a2520;
+  --ink-2: #564f47;
+  --muted: #847b6f;
+  --line: #e2d9ca;
+  --line-strong: #cfc4b2;
+  --accent: #3050b4;
+  --accent-ink: #f8f4ec;
+  --accent-soft: #e3e3ea;
+  --warm: #c9774c;
+  --warm-soft: #f0dfcd;
+  --chart: #2f6fc4;
+  --chart-soft: rgba(47, 111, 196, 0.1);
+  --good: #2f7a3e;
+  --bad: #b03a2e;
+  --wash: rgba(201, 119, 76, 0.08);
+  color-scheme: light;
+}
+
+/* Franja azul noche (Contacto + pie): redefine los colores para todo lo que está adentro */
+.band {
+  --bg: #151b31;
+  --surface: #1d2440;
+  --ink: #f3f1ec;
+  --ink-2: #c8cad6;
+  --muted: #8b90a6;
+  --line: #28304f;
+  --line-strong: #38416a;
+  --accent: #8fadff;
+  --accent-ink: #121729;
+  --accent-soft: #232e5c;
+  --warm: #f0a984;
+  --warm-soft: #3a2a2a;
+  --good: #34c46b;
+  --bad: #ff8a8a;
+  color-scheme: dark;
+  background: var(--bg);
+  color: var(--ink);
+}
+:root[data-theme="light"] .band { --bg: #121729; --surface: #1a2038; }
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-warm: var(--warm);
+  --color-warm-soft: var(--warm-soft);
+  --color-good: var(--good);
+  --color-bad: var(--bad);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif-display), ui-serif, Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+}
+
+html {
+  /* El desplazamiento suave lo hace src/lib/scroll.ts */
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+.font-serif {
+  font-optical-sizing: auto;
+  letter-spacing: -0.005em;
+}
+
+/* Etiquetas técnicas en monoespaciada: el "idioma" de sistemas del sitio */
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Cambio de tema: transición circular desde el botón (View Transitions API) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Inicio: una luz fija y tenue arriba a la derecha (sin manchas flotando) */
+.hero-wash {
+  background: radial-gradient(900px 480px at 88% -8%, var(--wash), transparent 70%);
+}
+
+/* ---------- Vida: color y movimiento ---------- */
+
+/* Luces de color que respiran detrás del inicio y del contacto.
+   Degradés radiales (sin blur) para que sea liviano. */
+.glow {
+  background: radial-gradient(circle, var(--glow-color) 0%, transparent 66%);
+  opacity: 0.32;
+  will-change: transform;
+  animation: float 16s ease-in-out infinite alternate;
+}
+:root[data-theme="light"] .glow { opacity: 0.22; }
+@keyframes float {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-30px, 25px, 0) scale(1.06); }
+  100% { transform: translate3d(35px, -20px, 0) scale(0.97); }
+}
+
+/* Apellido con un degradé que se desplaza muy lento */
+.text-flow {
+  background: linear-gradient(100deg, var(--ink) 20%, var(--accent) 45%, var(--warm) 60%, var(--ink) 85%);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: text-flow 10s ease-in-out infinite alternate;
+}
+@keyframes text-flow {
+  from { background-position: 100% 0; }
+  to { background-position: 0% 0; }
+}
+
+/* Borde de luz que gira alrededor de una tarjeta */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.border-flow { position: relative; }
+.border-flow::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: conic-gradient(from var(--angle), transparent 0 55%, var(--accent) 72%, var(--warm) 84%, transparent 96%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: spin-angle 7s linear infinite;
+}
+@keyframes spin-angle { to { --angle: 360deg; } }
+
+/* Tarjetas con un brillo suave que sigue al mouse */
+.spotlight { position: relative; isolation: isolate; }
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.4s;
+  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), var(--accent-soft), transparent 70%);
+}
+.spotlight:hover::before { opacity: 1; }
+
+/* Inclinación 3D suave (la maneja Tracker con [data-tilt]) */
+[data-tilt] {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.6s var(--ease-out), translate 0.5s var(--ease-out), border-color 0.5s;
+}
+[data-tilt].is-tilting { transition: transform 0.12s linear, translate 0.5s var(--ease-out), border-color 0.5s; }
+
+/* Botones "magnéticos": se acercan levemente al cursor */
+[data-magnetic] { transition: translate 0.5s var(--ease-out), background-color 0.3s, color 0.3s, border-color 0.3s; }
+
+/* Cinta de palabras que se desliza entre el inicio y el contenido */
+.marquee {
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 45s linear infinite;
+}
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* Herramientas: aura del color de la marca al pasar el mouse */
+.tool { position: relative; isolation: isolate; }
+.tool::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s;
+  background: radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--brand, var(--accent)) 22%, transparent), transparent 62%);
+}
+.tool:hover::before { opacity: 1; }
+
+/* ---------- Diagrama de proceso del inicio ---------- */
+.flow .flow-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1.2s var(--ease-out) forwards;
+  animation-delay: calc(var(--d, 0) * 180ms + 1300ms);
+}
+.flow .flow-node {
+  opacity: 0;
+  animation: node-in 0.6s var(--ease-out) forwards;
+  animation-delay: calc(var(--d, 0) * 180ms + 1200ms);
+}
+.flow .flow-pulse {
+  opacity: 0;
+  animation: node-in 0.4s ease forwards 3s;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes node-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- Animaciones ---------- */
+:root { --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+/* Aparición suave al hacer scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.9s ease, transform 0.9s var(--ease-out);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Elementos hijos que aparecen en cascada.
+   Usa `transform` (no `translate`) para no pisar los hover de Tailwind, que usan `translate` */
+.reveal [data-stagger] > * {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.6s ease calc(var(--i, 0) * 60ms + 200ms),
+    transform 0.7s var(--ease-out) calc(var(--i, 0) * 60ms + 200ms),
+    translate 0.3s var(--ease-out),
+    scale 0.3s var(--ease-out),
+    background-color 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+.reveal.is-visible [data-stagger] > * {
+  opacity: 1;
+  transform: none;
+}
+
+/* Encabezado de sección: la línea crece y el título sube desde una máscara */
+.section-bar {
+  width: 0;
+  transition: width 0.9s var(--ease-out) 0.25s;
+}
+.reveal.is-visible .section-bar { width: 2rem; }
+
+.section-title { overflow: hidden; padding-bottom: 0.08em; }
+.section-title-inner {
+  display: inline-block;
+  transform: translateY(105%);
+  transition: transform 1s var(--ease-out) 0.1s, color 0.5s ease;
+  background-image: linear-gradient(var(--warm-soft), var(--warm-soft));
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  background-size: 0% 0.32em;
+}
+.reveal.is-visible .section-title-inner { transform: none; }
+
+/* Al tocar una sección del menú: la sección "se enciende" un momento */
+.section.is-targeted .section-bar {
+  width: 4.5rem;
+  transition-delay: 0s;
+}
+.section.is-targeted .section-title-inner {
+  color: var(--accent);
+  animation: title-mark 1.8s var(--ease-out);
+}
+.section.is-targeted .reveal > div:last-child {
+  animation: content-nudge 0.9s var(--ease-out);
+}
+@keyframes title-mark {
+  0% { background-size: 0% 0.32em; }
+  40%, 80% { background-size: 100% 0.32em; }
+  100% { background-size: 100% 0.32em; }
+}
+@keyframes content-nudge {
+  0% { transform: translateY(12px); opacity: 0.5; }
+  100% { transform: none; opacity: 1; }
+}
+
+/* Entrada del inicio: cada bloque sube en secuencia */
+.intro > * {
+  opacity: 0;
+  animation: intro-up 1s var(--ease-out) forwards;
+  animation-delay: calc(var(--d, 0) * 130ms + 100ms);
+}
+.intro-line { display: block; overflow: hidden; padding-bottom: 0.08em; }
+.intro-line > span {
+  display: inline-block;
+  transform: translateY(110%);
+  animation: line-up 1.1s var(--ease-out) forwards;
+  animation-delay: calc(var(--d, 0) * 130ms + 150ms);
+}
+@keyframes intro-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes line-up {
+  to { transform: none; }
+}
+
+/* Cursor de "sistema" que titila junto al estado */
+.caret { animation: caret 1.1s steps(1) infinite; }
+@keyframes caret { 50% { opacity: 0; } }
+
+/* Palabras destacadas: subrayado que se dibuja al cargar */
+.hl {
+  background-image: linear-gradient(var(--accent-soft), var(--accent-soft));
+  background-repeat: no-repeat;
+  background-position: 0 90%;
+  background-size: 0% 0.35em;
+  animation: hl-draw 0.9s var(--ease-out) forwards;
+  animation-delay: 1.2s;
+}
+@keyframes hl-draw { to { background-size: 100% 0.35em; } }
+
+/* Líneas verticales que se "dibujan" de arriba hacia abajo */
+.reveal .grow-y {
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 1.4s var(--ease-out) 0.4s;
+}
+.reveal.is-visible .grow-y { transform: none; }
+
+/* Logos de herramientas: monocromos; toman el color de la marca al pasar el mouse */
+.tool:hover .tool-logo { color: var(--brand, var(--accent)); }
+
+/* Con "reducir movimiento" activado en el sistema solo se apagan los movimientos
+   continuos; las transiciones cortas de entrada se mantienen. */
+@media (prefers-reduced-motion: reduce) {
+  .caret, .animate-ping { animation: none; }
+}
+
+.tabular { font-variant-numeric: tabular-nums; }

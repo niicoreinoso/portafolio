@@ -1,0 +1,20 @@
+# Dependencias y build
+node_modules
+.next
+out
+next-env.d.ts
+*.tsbuildinfo
+
+# Variables de entorno (claves, contraseña del panel)
+.env
+.env*.local
+
+# Datos del sitio (visitas y mensajes)
+/data/*.json
+/data/*.tmp
+
+# Configuración local del editor / herramientas
+.claude/
+.vscode/
+.DS_Store
+*.log
