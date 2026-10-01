@@ -114,7 +114,7 @@ export function profileAsText() {
   const p = profile;
   return [
     `Nombre: ${p.name}`,
-    `Rol: ${p.role} — ${p.location}`,
+    `Rol: ${p.role} - ${p.location}`,
     `Formación: ${p.education.degree}, ${p.education.faculty} (${p.education.university}). ${p.education.status}.`,
     `Titular: ${p.headline}`,
     `Sobre mí: ${p.about.join(" ")}`,

@@ -37,9 +37,8 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
   function toggle(e: React.MouseEvent<HTMLButtonElement>) {
     const next: Theme = theme === "dark" ? "light" : "dark";
     const doc = document as Document & { startViewTransition?: (cb: () => void) => { ready: Promise<void> } };
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (!doc.startViewTransition || reduce) return apply(next);
+    if (!doc.startViewTransition || document.documentElement.dataset.motion === "off") return apply(next);
 
     // El nuevo tema se expande en círculo desde el botón
     const { clientX: x, clientY: y } = e;
