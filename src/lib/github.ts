@@ -45,7 +45,7 @@ export async function getRepos(): Promise<Repo[] | null> {
   try {
     const res = await fetch(
       `https://api.github.com/users/${profile.github}/repos?per_page=100&sort=pushed`,
-      { headers: headers(), next: { revalidate: 3600 } },
+      { headers: headers(), next: { revalidate: 3600 }, signal: AbortSignal.timeout(8_000) },
     );
     if (!res.ok) return null;
     const data = (await res.json()) as RawRepo[];
@@ -85,6 +85,7 @@ export async function getGitHubUser(): Promise<GitHubUser | null> {
     const res = await fetch(`https://api.github.com/users/${profile.github}`, {
       headers: headers(),
       next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(8_000),
     });
     if (!res.ok) return null;
     const u = await res.json();

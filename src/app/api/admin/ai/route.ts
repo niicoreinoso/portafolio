@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/auth";
-import { generate, geminiConfigured, type ChatTurn } from "@/lib/gemini";
+import { generate, geminiConfigured, sanitizeTurns } from "@/lib/gemini";
+import { readJson } from "@/lib/http";
 import { profile, profileAsText } from "@/content/profile";
 import { getRepos } from "@/lib/github";
 import { getStats, statsAsText } from "@/lib/analytics";
@@ -34,12 +35,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Configurá GEMINI_API_KEY en .env.local para usar el asistente." }, { status: 503 });
   }
 
-  const body = await req.json().catch(() => null);
-  let turns: ChatTurn[] = Array.isArray(body?.messages)
-    ? body.messages
-        .filter((m: ChatTurn) => (m.role === "user" || m.role === "model") && typeof m.text === "string")
-        .slice(-16)
-    : [];
+  const body = await readJson(req, 64 * 1024);
+  let turns = sanitizeTurns(body?.messages, 16, 4000);
 
   if (typeof body?.action === "string") {
     if (body.action === "reply" && typeof body.messageId === "string") {

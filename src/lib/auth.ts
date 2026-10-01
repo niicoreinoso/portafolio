@@ -5,9 +5,11 @@ import { cookies } from "next/headers";
 export const SESSION_COOKIE = "admin_session";
 const MAX_AGE = 60 * 60 * 24 * 7; // 7 días
 
+// La firma usa AUTH_SECRET y nunca la contraseña: si la cookie se filtrara, la contraseña
+// no se podría deducir probando claves contra la firma.
 function secret() {
-  const s = process.env.AUTH_SECRET || process.env.ADMIN_PASSWORD;
-  if (!s) throw new Error("Falta ADMIN_PASSWORD en .env.local");
+  const s = process.env.AUTH_SECRET;
+  if (!s || s.length < 16) throw new Error("Falta AUTH_SECRET (mínimo 16 caracteres) en .env.local");
   return s;
 }
 
@@ -35,7 +37,7 @@ export function createSessionToken() {
 export async function setSessionCookie() {
   (await cookies()).set(SESSION_COOKIE, createSessionToken(), {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: MAX_AGE,
@@ -51,6 +53,10 @@ export async function isAdmin() {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return false;
   const [exp, sig] = token.split(".");
-  if (!exp || !sig || Number(exp) < Date.now()) return false;
-  return safeEqual(sig, sign(exp));
+  if (!exp || !sig || !(Number(exp) >= Date.now())) return false;
+  try {
+    return safeEqual(sig, sign(exp));
+  } catch {
+    return false; // configuración incompleta: nadie entra
+  }
 }

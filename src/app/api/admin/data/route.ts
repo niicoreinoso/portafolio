@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/auth";
 import { readDB, resetStats } from "@/lib/store";
+import { readJson } from "@/lib/http";
 
 /** Descarga una copia completa de los datos (backup). */
 export async function GET() {
@@ -18,7 +19,7 @@ export async function GET() {
 /** Borra las estadísticas. Los mensajes y la configuración se conservan. */
 export async function DELETE(req: Request) {
   if (!(await isAdmin())) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
-  const body = await req.json().catch(() => null);
+  const body = await readJson(req, 1024);
   if (body?.confirm !== "BORRAR") return NextResponse.json({ error: "Falta confirmación" }, { status: 400 });
   await resetStats();
   return NextResponse.json({ ok: true });

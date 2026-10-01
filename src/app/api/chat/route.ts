@@ -1,24 +1,23 @@
 import { NextResponse } from "next/server";
-import { generate, publicChatEnabled, type ChatTurn } from "@/lib/gemini";
+import { generate, publicChatEnabled, sanitizeTurns } from "@/lib/gemini";
 import { profile, profileAsText } from "@/content/profile";
 import { getShowcaseRepos } from "@/lib/github";
 import { addChat, getSettings } from "@/lib/store";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { readJson } from "@/lib/http";
+
+const HOUR_MS = 60 * 60 * 1000;
 
 // Chatbot público: responde preguntas de visitantes sobre Nicolás.
 export async function POST(req: Request) {
   if (!publicChatEnabled() || !(await getSettings()).chatEnabled) return NextResponse.json({ error: "Chat no disponible." }, { status: 503 });
-  if (!rateLimit(`chat:${await clientIp()}`, 20, 60 * 60 * 1000)) {
+  // Tope por visitante y tope global, para que el gasto de la API no dependa de cuántas IP distintas lleguen
+  if (!rateLimit(`chat:${await clientIp()}`, 20, HOUR_MS) || !rateLimit("chat:global", 300, HOUR_MS)) {
     return NextResponse.json({ error: "Alcanzaste el límite de preguntas por ahora. Probá más tarde." }, { status: 429 });
   }
 
-  const body = await req.json().catch(() => null);
-  const turns: ChatTurn[] = Array.isArray(body?.messages)
-    ? body.messages
-        .filter((m: ChatTurn) => (m.role === "user" || m.role === "model") && typeof m.text === "string")
-        .slice(-8)
-        .map((m: ChatTurn) => ({ role: m.role, text: m.text.slice(0, 1000) }))
-    : [];
+  const body = await readJson(req);
+  const turns = sanitizeTurns(body?.messages, 8, 1000);
   if (!turns.length || turns.at(-1)!.role !== "user") {
     return NextResponse.json({ error: "Mensaje inválido." }, { status: 400 });
   }
