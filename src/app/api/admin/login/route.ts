@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { checkPassword, clearSessionCookie, setSessionCookie } from "@/lib/auth";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { readJson } from "@/lib/http";
 
 export async function POST(req: Request) {
   if (!process.env.ADMIN_PASSWORD) {
@@ -9,11 +10,16 @@ export async function POST(req: Request) {
   if (!rateLimit(`login:${await clientIp()}`, 10, 15 * 60 * 1000)) {
     return NextResponse.json({ error: "Demasiados intentos. Esperá unos minutos." }, { status: 429 });
   }
-  const body = await req.json().catch(() => null);
-  if (!checkPassword(String(body?.password ?? ""))) {
-    return NextResponse.json({ error: "Contraseña incorrecta." }, { status: 401 });
+  const body = await readJson(req, 1024);
+  try {
+    if (!checkPassword(String(body?.password ?? ""))) {
+      return NextResponse.json({ error: "Contraseña incorrecta." }, { status: 401 });
+    }
+    await setSessionCookie();
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Configuración incompleta: revisá AUTH_SECRET en .env.local" }, { status: 500 });
   }
-  await setSessionCookie();
   return NextResponse.json({ ok: true });
 }
 

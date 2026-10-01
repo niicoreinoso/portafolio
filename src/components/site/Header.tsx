@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { profile, sections } from "@/content/profile";
 import { Menu, X } from "@/components/icons";
 import ThemeToggle from "@/components/ThemeToggle";
+import MotionToggle from "@/components/MotionToggle";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -51,7 +52,7 @@ export default function Header() {
     return () => window.removeEventListener("resize", measure);
   }, [active]);
 
-  // El desplazamiento animado y el resaltado los maneja Tracker para todos los links "#..."
+  // El desplazamiento animado y el resaltado los maneja Effects para todos los links "#..."
   const go = (id: string) => {
     setOpen(false);
     setActive(id);
@@ -92,6 +93,7 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-2 md:ml-4">
+        <MotionToggle />
         <ThemeToggle />
         <button
           className="-mr-2 p-2 text-ink-2 md:hidden"
@@ -133,7 +135,7 @@ export default function Header() {
       <div
         ref={progressRef}
         aria-hidden
-        className="absolute inset-x-0 -bottom-px h-[2px] origin-left bg-gradient-to-r from-accent to-warm"
+        className="absolute inset-x-0 -bottom-px h-[2px] origin-left bg-accent"
         style={{ transform: "scaleX(0)" }}
       />
     </header>

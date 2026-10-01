@@ -2,6 +2,15 @@ import "server-only";
 
 export type ChatTurn = { role: "user" | "model"; text: string };
 
+/** Filtra y recorta el historial que manda el navegador: solo roles válidos, con tope de turnos y de largo. */
+export function sanitizeTurns(input: unknown, maxTurns: number, maxChars: number): ChatTurn[] {
+  if (!Array.isArray(input)) return [];
+  return input
+    .filter((m): m is ChatTurn => (m?.role === "user" || m?.role === "model") && typeof m.text === "string")
+    .slice(-maxTurns)
+    .map((m) => ({ role: m.role, text: m.text.slice(0, maxChars) }));
+}
+
 export const geminiConfigured = () => Boolean(process.env.GEMINI_API_KEY);
 
 export const publicChatEnabled = () =>
@@ -34,6 +43,7 @@ export async function generate({
         generationConfig: { temperature, maxOutputTokens },
       }),
       cache: "no-store",
+      signal: AbortSignal.timeout(25_000),
     },
   );
 

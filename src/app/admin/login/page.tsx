@@ -35,7 +35,7 @@ export default function LoginPage() {
         <div className="glow absolute -bottom-60 -left-40 size-[520px] rounded-full [--glow-color:var(--warm)] [animation-delay:-8s]" />
       </div>
 
-      <form onSubmit={onSubmit} className="border-flow relative w-full max-w-sm rounded-3xl border border-line bg-surface p-8">
+      <form onSubmit={onSubmit} className="relative w-full max-w-sm rounded-3xl border border-line bg-surface p-8">
         <p className="label-mono">acceso privado</p>
         <h1 className="mt-3 font-serif text-3xl">
           Panel<span className="text-accent">.</span>

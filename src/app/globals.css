@@ -24,25 +24,25 @@
   color-scheme: dark;
 }
 
-/* Claro: crema cálido y tranquilo, sin blancos puros */
+/* Claro: gris neutro frío y sin blancos puros. Contrastes medidos: texto de apoyo 4.9:1, resto más alto */
 :root[data-theme="light"] {
-  --bg: #f2ede3;
-  --surface: #f8f4ec;
-  --ink: #2a2520;
-  --ink-2: #564f47;
-  --muted: #847b6f;
-  --line: #e2d9ca;
-  --line-strong: #cfc4b2;
-  --accent: #3050b4;
-  --accent-ink: #f8f4ec;
-  --accent-soft: #e3e3ea;
+  --bg: #f3f4f4;
+  --surface: #fbfbfb;
+  --ink: #1c1e22;
+  --ink-2: #474b53;
+  --muted: #656a73;
+  --line: #e0e2e6;
+  --line-strong: #cbced5;
+  --accent: #2f4fb0;
+  --accent-ink: #fbfbfb;
+  --accent-soft: #e2e7f6;
   --warm: #c9774c;
-  --warm-soft: #f0dfcd;
+  --warm-soft: #eee6dd;
   --chart: #2f6fc4;
   --chart-soft: rgba(47, 111, 196, 0.1);
   --good: #2f7a3e;
   --bad: #b03a2e;
-  --wash: rgba(201, 119, 76, 0.08);
+  --wash: rgba(47, 79, 176, 0.06);
   color-scheme: light;
 }
 
@@ -83,7 +83,7 @@
   --color-warm-soft: var(--warm-soft);
   --color-good: var(--good);
   --color-bad: var(--bad);
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-sans-body), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-serif-display), ui-serif, Georgia, serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
 }
@@ -104,6 +104,15 @@ body {
   color: var(--ink);
 }
 
+/* Las partes del navegador que no dibujamos también llevan el diseño */
+html { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+input, textarea { caret-color: var(--accent); }
+a { text-underline-offset: 0.2em; }
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
 .font-serif {
   font-optical-sizing: auto;
   letter-spacing: -0.005em;
@@ -112,9 +121,7 @@ body {
 /* Etiquetas técnicas en monoespaciada: el "idioma" de sistemas del sitio */
 .label-mono {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 0.78rem;
   color: var(--muted);
 }
 
@@ -128,6 +135,63 @@ body {
 /* Inicio: una luz fija y tenue arriba a la derecha (sin manchas flotando) */
 .hero-wash {
   background: radial-gradient(900px 480px at 88% -8%, var(--wash), transparent 70%);
+}
+
+/* ---------- Fondo vivo del inicio ---------- */
+@property --hx { syntax: "<percentage>"; inherits: true; initial-value: 70%; }
+@property --hy { syntax: "<percentage>"; inherits: true; initial-value: 40%; }
+/* Dos animaciones con duraciones distintas: la luz dibuja un recorrido que casi nunca se repite */
+.hero-field { animation: field-x 41s ease-in-out infinite alternate, field-y 29s ease-in-out infinite alternate; }
+@keyframes field-x { from { --hx: 16%; } to { --hx: 88%; } }
+@keyframes field-y { from { --hy: 20%; } to { --hy: 80%; } }
+.hero-field > * { position: absolute; inset: 0; }
+.hero-field-dots {
+  background-image: radial-gradient(circle, currentColor 1.1px, transparent 1.7px);
+  background-size: 28px 28px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+}
+.hero-field-lit {
+  background-image: radial-gradient(circle, currentColor 1.6px, transparent 2.2px);
+  -webkit-mask-image: radial-gradient(circle 260px at var(--hx) var(--hy), #000 0%, transparent 100%);
+  mask-image: radial-gradient(circle 260px at var(--hx) var(--hy), #000 0%, transparent 100%);
+}
+.hero-field-glow {
+  background: radial-gradient(circle 320px at var(--hx) var(--hy), color-mix(in srgb, var(--accent) 18%, transparent), transparent 100%);
+}
+
+/* ---------- Tarjeta "ahora mismo" ---------- */
+@property --gx { syntax: "<percentage>"; inherits: true; initial-value: 82%; }
+@property --gy { syntax: "<percentage>"; inherits: true; initial-value: 12%; }
+.now-card {
+  position: relative;
+  isolation: isolate;
+  animation: now-gx 19s ease-in-out infinite alternate, now-gy 27s ease-in-out infinite alternate;
+}
+/* Un brillo ambiente que se desplaza despacio dentro de la tarjeta */
+.now-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle 280px at var(--gx) var(--gy), color-mix(in srgb, var(--accent) 13%, transparent), transparent 100%);
+}
+@keyframes now-gx { from { --gx: 82%; } to { --gx: 18%; } }
+@keyframes now-gy { from { --gy: 8%; } to { --gy: 70%; } }
+
+/* Las filas entran una tras otra cuando termina la entrada del inicio */
+.now-row {
+  animation: intro-up 0.9s var(--ease-out) backwards;
+  animation-delay: calc(var(--r, 0) * 140ms + 1000ms);
+}
+
+/* Onda lenta que sale del punto de disponibilidad y del ícono "buscando" */
+.now-ripple { animation: now-ripple 3.4s var(--ease-out) infinite; }
+@keyframes now-ripple {
+  0% { opacity: 0.5; transform: scale(1); }
+  70%, 100% { opacity: 0; transform: scale(1.7); }
 }
 
 /* ---------- Vida: color y movimiento ---------- */
@@ -147,42 +211,6 @@ body {
   100% { transform: translate3d(35px, -20px, 0) scale(0.97); }
 }
 
-/* Apellido con un degradé que se desplaza muy lento */
-.text-flow {
-  background: linear-gradient(100deg, var(--ink) 20%, var(--accent) 45%, var(--warm) 60%, var(--ink) 85%);
-  background-size: 260% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: text-flow 10s ease-in-out infinite alternate;
-}
-@keyframes text-flow {
-  from { background-position: 100% 0; }
-  to { background-position: 0% 0; }
-}
-
-/* Borde de luz que gira alrededor de una tarjeta */
-@property --angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
-}
-.border-flow { position: relative; }
-.border-flow::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  pointer-events: none;
-  background: conic-gradient(from var(--angle), transparent 0 55%, var(--accent) 72%, var(--warm) 84%, transparent 96%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: spin-angle 7s linear infinite;
-}
-@keyframes spin-angle { to { --angle: 360deg; } }
-
 /* Tarjetas con un brillo suave que sigue al mouse */
 .spotlight { position: relative; isolation: isolate; }
 .spotlight::before {
@@ -196,28 +224,6 @@ body {
   background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), var(--accent-soft), transparent 70%);
 }
 .spotlight:hover::before { opacity: 1; }
-
-/* Inclinación 3D suave (la maneja Tracker con [data-tilt]) */
-[data-tilt] {
-  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-  transition: transform 0.6s var(--ease-out), translate 0.5s var(--ease-out), border-color 0.5s;
-}
-[data-tilt].is-tilting { transition: transform 0.12s linear, translate 0.5s var(--ease-out), border-color 0.5s; }
-
-/* Botones "magnéticos": se acercan levemente al cursor */
-[data-magnetic] { transition: translate 0.5s var(--ease-out), background-color 0.3s, color 0.3s, border-color 0.3s; }
-
-/* Cinta de palabras que se desliza entre el inicio y el contenido */
-.marquee {
-  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
-}
-.marquee-track {
-  display: flex;
-  width: max-content;
-  animation: marquee 45s linear infinite;
-}
-.marquee:hover .marquee-track { animation-play-state: paused; }
-@keyframes marquee { to { transform: translateX(-50%); } }
 
 /* Herramientas: aura del color de la marca al pasar el mouse */
 .tool { position: relative; isolation: isolate; }
@@ -287,10 +293,12 @@ body {
 
 /* Encabezado de sección: la línea crece y el título sube desde una máscara */
 .section-bar {
-  width: 0;
-  transition: width 0.9s var(--ease-out) 0.25s;
+  width: 4.5rem;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.9s var(--ease-out) 0.25s;
 }
-.reveal.is-visible .section-bar { width: 2rem; }
+.reveal.is-visible .section-bar { transform: scaleX(0.444); }
 
 .section-title { overflow: hidden; padding-bottom: 0.08em; }
 .section-title-inner {
@@ -306,7 +314,7 @@ body {
 
 /* Al tocar una sección del menú: la sección "se enciende" un momento */
 .section.is-targeted .section-bar {
-  width: 4.5rem;
+  transform: scaleX(1);
   transition-delay: 0s;
 }
 .section.is-targeted .section-title-inner {
@@ -373,10 +381,22 @@ body {
 /* Logos de herramientas: monocromos; toman el color de la marca al pasar el mouse */
 .tool:hover .tool-logo { color: var(--brand, var(--accent)); }
 
-/* Con "reducir movimiento" activado en el sistema solo se apagan los movimientos
-   continuos; las transiciones cortas de entrada se mantienen. */
-@media (prefers-reduced-motion: reduce) {
-  .caret, .animate-ping { animation: none; }
+/* Los efectos se muestran siempre, aunque el sistema tenga "reducir movimiento" o el
+   modo rendimiento activado: es una decisión de diseño de este sitio. Quien quiera
+   frenarlos usa el botón de pausa del encabezado (html[data-motion="off"]). */
+:root[data-motion="off"] {
+  .caret, .animate-ping, .animate-pulse, .glow, .hero-field, .now-card, .now-row, .now-ripple { animation: none; }
+  .reveal, .reveal [data-stagger] > *, .intro > *, .intro-line > span {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+  .section-title-inner, .reveal .grow-y { transform: none; transition: none; }
+  .section-bar { transform: scaleX(0.444); transition: none; }
+  .hl { animation: none; background-size: 100% 0.35em; }
+  .flow .flow-line { animation: none; stroke-dashoffset: 0; }
+  .flow .flow-node, .flow .flow-pulse { animation: none; opacity: 1; }
 }
 
 .tabular { font-variant-numeric: tabular-nums; }

@@ -2,9 +2,12 @@ import { NextResponse } from "next/server";
 import { addEngagement, addSection, addVisit, type VisitEvent } from "@/lib/store";
 import { sections } from "@/content/profile";
 import { isAdmin } from "@/lib/auth";
+import { readJson } from "@/lib/http";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 
 const BOT = /bot|crawler|spider|crawling|preview|headless|lighthouse/i;
 const validSections = new Set<string>(sections.map((s) => s.id));
+const VISITOR_ID = /^[\w-]{1,40}$/;
 
 function device(ua: string): VisitEvent["device"] {
   if (/ipad|tablet/i.test(ua)) return "tablet";
@@ -40,9 +43,12 @@ export async function POST(req: Request) {
   // No contamos bots ni tus propias visitas como admin
   if (BOT.test(ua) || (await isAdmin())) return new NextResponse(null, { status: 204 });
 
-  const body = await req.json().catch(() => null);
-  const vid = typeof body?.vid === "string" ? body.vid.slice(0, 40) : "";
-  if (!vid) return new NextResponse(null, { status: 204 });
+  // Un visitante normal manda ~7 eventos por visita; esto frena a quien intente llenar la base
+  if (!rateLimit(`track:${await clientIp()}`, 60, 60_000)) return new NextResponse(null, { status: 204 });
+
+  const body = await readJson(req, 2 * 1024);
+  const vid = typeof body?.vid === "string" && VISITOR_ID.test(body.vid) ? body.vid : "";
+  if (!body || !vid) return new NextResponse(null, { status: 204 });
   const t = Date.now();
 
   if (body.type === "pageview") {

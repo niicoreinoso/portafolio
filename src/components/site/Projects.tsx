@@ -11,7 +11,7 @@ export default async function Projects() {
   return (
     <div>
       <p className="max-w-xl text-ink-2">
-        Una selección de lo que estoy construyendo. Todo el código está disponible en mi GitHub.
+        Lo que estoy construyendo. El código está en mi GitHub.
       </p>
 
       {repos && repos.length > 0 ? (
@@ -28,7 +28,7 @@ export default async function Projects() {
                   <h3 className="font-serif text-lg capitalize">{r.name.replace(/[-_]/g, " ")}</h3>
                   <ArrowUpRight className="mt-0.5 shrink-0 text-muted transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent" />
                 </div>
-                <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-ink-2">
+                <p className="mt-2 line-clamp-4 flex-1 text-sm leading-relaxed text-ink-2">
                   {r.description ?? "Proyecto sin descripción todavía."}
                 </p>
                 {r.topics.length > 0 && (

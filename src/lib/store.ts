@@ -1,5 +1,5 @@
 import "server-only";
-import { promises as fs } from "fs";
+import { promises as fs, renameSync, writeFileSync } from "fs";
 import path from "path";
 import { profile } from "@/content/profile";
 
@@ -64,63 +64,133 @@ type DB = {
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_FILE = path.join(DATA_DIR, "db.json");
 const MAX_EVENTS = 50_000;
+const MAX_CHATS = 5_000;
+const FLUSH_DELAY_MS = 2_000;
 
 const empty = (): DB => ({ visits: [], sections: [], engagements: [], messages: [], chats: [] });
 
-let queue: Promise<unknown> = Promise.resolve();
+// El estado vive en globalThis para sobrevivir a la recarga de módulos en desarrollo.
+type State = { db: DB | null; dirty: boolean; timer: NodeJS.Timeout | null; queue: Promise<unknown>; exitHook: boolean };
+const g = globalThis as typeof globalThis & { __portafolioStore?: State };
+const state: State = (g.__portafolioStore ??= { db: null, dirty: false, timer: null, queue: Promise.resolve(), exitHook: false });
 
+const isErrno = (e: unknown, code: string) => (e as NodeJS.ErrnoException)?.code === code;
+
+/** Carga el archivo una sola vez y lo deja en memoria. */
 async function load(): Promise<DB> {
+  if (state.db) return state.db;
+  let raw: string;
   try {
-    const raw = await fs.readFile(DB_FILE, "utf8");
-    return { ...empty(), ...JSON.parse(raw) };
+    raw = await fs.readFile(DB_FILE, "utf8");
+  } catch (e) {
+    // Solo "no existe" significa base vacía. Cualquier otro error (archivo bloqueado por
+    // OneDrive, permisos) debe fallar: tratarlo como vacío y guardar borraría los datos.
+    if (isErrno(e, "ENOENT")) return (state.db = empty());
+    throw e;
+  }
+  try {
+    state.db = { ...empty(), ...JSON.parse(raw) };
   } catch {
-    return empty();
+    // Archivo corrupto: se conserva una copia para recuperarlo y se arranca de cero
+    const backup = path.join(DATA_DIR, `db.corrupt-${Date.now()}.json`);
+    await fs.rename(DB_FILE, backup).catch(() => undefined);
+    console.error(`[store] db.json ilegible; copia guardada en ${backup}`);
+    state.db = empty();
+  }
+  return state.db!;
+}
+
+const tmpFile = () => `${DB_FILE}.${process.pid}.tmp`;
+
+/** Escritura atómica (archivo temporal + rename), con reintentos por bloqueos pasajeros en Windows. */
+async function flush() {
+  if (state.timer) {
+    clearTimeout(state.timer);
+    state.timer = null;
+  }
+  if (!state.dirty || !state.db) return;
+  state.dirty = false;
+  const json = JSON.stringify(state.db);
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    for (let attempt = 0; ; attempt++) {
+      try {
+        await fs.writeFile(tmpFile(), json);
+        await fs.rename(tmpFile(), DB_FILE);
+        return;
+      } catch (e) {
+        if (attempt >= 3 || !(isErrno(e, "EPERM") || isErrno(e, "EBUSY") || isErrno(e, "EACCES"))) throw e;
+        await new Promise((r) => setTimeout(r, 50 * (attempt + 1)));
+      }
+    }
+  } catch (e) {
+    state.dirty = true; // se reintenta con la próxima escritura
+    throw e;
   }
 }
 
-async function save(db: DB) {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  const tmp = DB_FILE + ".tmp";
-  await fs.writeFile(tmp, JSON.stringify(db));
-  await fs.rename(tmp, DB_FILE);
+/** Al cerrar el proceso se guarda lo pendiente (las visitas se agrupan unos segundos antes de escribirse). */
+function ensureExitHook() {
+  if (state.exitHook) return;
+  state.exitHook = true;
+  process.once("exit", () => {
+    if (!state.dirty || !state.db) return;
+    try {
+      writeFileSync(tmpFile(), JSON.stringify(state.db));
+      renameSync(tmpFile(), DB_FILE);
+    } catch {}
+  });
 }
 
-/** Lecturas y escrituras pasan por una cola para no pisarse entre requests. */
-function withDB<T>(fn: (db: DB) => T | Promise<T>, write = false): Promise<T> {
-  const run = queue.then(async () => {
+type Mode = "read" | "batched" | "durable";
+
+/**
+ * Todo pasa por una cola para no pisarse entre requests.
+ * - batched: eventos de analítica; se escriben juntos cada pocos segundos.
+ * - durable: datos que no se pueden perder (mensajes, ajustes); se escriben antes de responder.
+ */
+function withDB<T>(fn: (db: DB) => T | Promise<T>, mode: Mode = "read"): Promise<T> {
+  const run = state.queue.then(async () => {
     const db = await load();
     const result = await fn(db);
-    if (write) {
+    if (mode !== "read") {
       db.visits = db.visits.slice(-MAX_EVENTS);
       db.sections = db.sections.slice(-MAX_EVENTS);
       db.engagements = db.engagements.slice(-MAX_EVENTS);
-      db.chats = db.chats.slice(-5_000);
-      await save(db);
+      db.chats = db.chats.slice(-MAX_CHATS);
+      state.dirty = true;
+      if (mode === "durable") await flush();
+      else if (!state.timer) {
+        ensureExitHook();
+        state.timer = setTimeout(() => void flush().catch((e) => console.error("[store] no se pudo guardar", e)), FLUSH_DELAY_MS);
+        state.timer.unref();
+      }
     }
     return result;
   });
-  queue = run.catch(() => undefined);
+  state.queue = run.catch(() => undefined);
   return run;
 }
 
-export const readDB = () => withDB((db) => db);
+/** Copia de los datos: quien la reciba puede ordenarla o modificarla sin afectar la base en memoria. */
+export const readDB = () => withDB((db) => structuredClone(db));
 
-export const addVisit = (v: VisitEvent) => withDB((db) => void db.visits.push(v), true);
-export const addSection = (s: SectionEvent) => withDB((db) => void db.sections.push(s), true);
-export const addEngagement = (e: Engagement) => withDB((db) => void db.engagements.push(e), true);
-export const addChat = (c: ChatLog) => withDB((db) => void db.chats.push(c), true);
+export const addVisit = (v: VisitEvent) => withDB((db) => void db.visits.push(v), "batched");
+export const addSection = (s: SectionEvent) => withDB((db) => void db.sections.push(s), "batched");
+export const addEngagement = (e: Engagement) => withDB((db) => void db.engagements.push(e), "batched");
+export const addChat = (c: ChatLog) => withDB((db) => void db.chats.push(c), "batched");
 
-export const addMessage = (m: ContactMessage) => withDB((db) => void db.messages.unshift(m), true);
+export const addMessage = (m: ContactMessage) => withDB((db) => void db.messages.unshift(m), "durable");
 
 export const updateMessage = (id: string, patch: Partial<Pick<ContactMessage, "read" | "starred">>) =>
   withDB((db) => {
     for (const m of db.messages) if (id === "*" || m.id === id) Object.assign(m, patch);
-  }, true);
+  }, "durable");
 
 export const deleteMessage = (id: string) =>
   withDB((db) => {
     db.messages = db.messages.filter((x) => x.id !== id);
-  }, true);
+  }, "durable");
 
 /** Borra estadísticas (visitas, secciones, tiempos y preguntas al chatbot). Los mensajes se conservan. */
 export const resetStats = () =>
@@ -129,11 +199,11 @@ export const resetStats = () =>
     db.sections = [];
     db.engagements = [];
     db.chats = [];
-  }, true);
+  }, "durable");
 
 export const getSettings = () => withDB((db) => ({ ...defaultSettings(), ...db.settings }) as Settings);
 
 export const saveSettings = (s: Settings) =>
   withDB((db) => {
     db.settings = s;
-  }, true);
+  }, "durable");

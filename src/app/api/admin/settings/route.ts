@@ -2,12 +2,13 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { isAdmin } from "@/lib/auth";
 import { getSettings, saveSettings, type Settings } from "@/lib/store";
+import { readJson } from "@/lib/http";
 
 const str = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 
 export async function PUT(req: Request) {
   if (!(await isAdmin())) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
-  const b = await req.json().catch(() => null);
+  const b = await readJson(req, 4 * 1024);
   const current = await getSettings();
 
   const next: Settings = {
