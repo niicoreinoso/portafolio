@@ -65,7 +65,7 @@ export default function Header() {
       }`}
     >
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-5 sm:px-8">
-        <a href="#inicio" onClick={() => setActive(null)} className="group font-serif text-lg">
+        <a href="#inicio" onClick={() => setActive(null)} className="group text-[15px] font-bold tracking-[-0.01em]">
           {profile.name}
           <span className="inline-block text-accent transition-transform duration-300 group-hover:scale-150">.</span>
         </a>

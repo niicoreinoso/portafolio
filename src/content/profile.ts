@@ -29,31 +29,51 @@ export const profile = {
     faculty: "Facultad de Ciencias Económicas", // revisar
     university: "Universidad de Buenos Aires", // revisar
     status: "En curso",
+    // Qué cubre la carrera (lista de Formación)
+    topics: ["Análisis y diseño de sistemas", "Bases de datos", "Gestión de proyectos", "Procesos de negocio"],
     description:
       "Una carrera que combina tecnología, datos y administración: análisis y diseño de sistemas, bases de datos, gestión de proyectos y procesos de negocio, siempre con foco en cómo la información genera valor en una organización.",
   },
 
+  // Frase grande de "Sobre mí" (revisar)
+  aboutLead: "Me interesa el punto donde se cruzan la tecnología y las personas.",
+
   // revisar
   about: [
-    "Soy Nicolás, estudiante de la Licenciatura en Sistemas de Información de las Organizaciones. Me interesa el punto donde se cruzan la tecnología y las personas: entender cómo funciona una organización, detectar qué se puede mejorar y construir la herramienta que lo resuelva.",
+    "Soy Nicolás, estudiante de la Licenciatura en Sistemas de Información de las Organizaciones. Me gusta entender cómo funciona una organización, detectar qué se puede mejorar y construir la herramienta que lo resuelva.",
     "Me gusta aprender haciendo. Cada materia la complemento con proyectos propios, donde pruebo tecnologías nuevas y pongo en práctica lo que veo en la facultad. Valoro el trabajo ordenado, la comunicación clara y el código que otra persona puede entender.",
   ],
 
+  // Mis reglas de trabajo, en "Sobre mí" (revisar)
+  principles: [
+    "Primero entiendo, después construyo.",
+    "Si no está documentado, no está terminado.",
+    "Escribo código para que otra persona lo entienda.",
+  ],
+
+  // Datos rápidos debajo de la foto. Los que quedan vacíos no se muestran. (completar)
+  facts: [
+    { label: "Base", value: "Buenos Aires" },
+    { label: "Carrera", value: "Lic. en Sistemas, FCE-UBA" },
+    { label: "Idiomas", value: "" },
+    { label: "Fuera de la facu", value: "" },
+  ],
+
   // Herramientas que usás. `icon` es la clave del logo (ver src/components/site/ToolIcon.tsx).
-  // Dejá solo las que realmente manejás. (revisar)
+  // `group` las agrupa por para qué las usás. Dejá solo las que realmente manejás. (revisar)
   tools: [
-    { name: "Python", icon: "python" },
-    { name: "SQL", icon: "sql" },
-    { name: "Excel", icon: "excel" },
-    { name: "Power BI", icon: "powerbi" },
-    { name: "JavaScript", icon: "javascript" },
-    { name: "TypeScript", icon: "typescript" },
-    { name: "React", icon: "react" },
-    { name: "Next.js", icon: "nextjs" },
-    { name: "HTML", icon: "html" },
-    { name: "CSS", icon: "css" },
-    { name: "Git", icon: "git" },
-    { name: "GitHub", icon: "github" },
+    { name: "Python", icon: "python", group: "data" },
+    { name: "SQL", icon: "sql", group: "data" },
+    { name: "Excel", icon: "excel", group: "data" },
+    { name: "Power BI", icon: "powerbi", group: "data" },
+    { name: "JavaScript", icon: "javascript", group: "build" },
+    { name: "TypeScript", icon: "typescript", group: "build" },
+    { name: "React", icon: "react", group: "build" },
+    { name: "Next.js", icon: "nextjs", group: "build" },
+    { name: "HTML", icon: "html", group: "build" },
+    { name: "CSS", icon: "css", group: "build" },
+    { name: "Git", icon: "git", group: "team" },
+    { name: "GitHub", icon: "github", group: "team" },
   ],
 
   // Competencias por área. `icon`: "process" | "data" | "people" | "build". (revisar)
@@ -75,22 +95,23 @@ export const profile = {
     },
   ],
 
-  // revisar
+  // `glyph`: dibujo de la tarjeta ("paper" | "bars" | "nodes" | "cursor"). (revisar)
   interests: [
-    { title: "Transformación digital", text: "Cómo la tecnología cambia la forma de trabajar de las empresas." },
-    { title: "Análisis de datos", text: "Convertir datos en decisiones claras y medibles." },
-    { title: "Inteligencia artificial", text: "Aplicaciones prácticas de la IA en procesos de negocio." },
-    { title: "Producto y experiencia", text: "Diseñar soluciones simples para problemas reales." },
+    { title: "Transformación digital", text: "Cómo la tecnología cambia la forma de trabajar de las empresas.", glyph: "paper" },
+    { title: "Análisis de datos", text: "Convertir datos en decisiones claras y medibles.", glyph: "bars" },
+    { title: "Inteligencia artificial", text: "Aplicaciones prácticas de la IA en procesos de negocio.", glyph: "nodes" },
+    { title: "Producto y experiencia", text: "Diseñar soluciones simples para problemas reales.", glyph: "cursor" },
   ],
 
   // revisar
   growth: {
     intro:
       "Busco dar mis primeros pasos profesionales en roles donde pueda aportar desde el análisis y la tecnología, y seguir creciendo con equipos que valoren el aprendizaje.",
+    // Un camino: hoy, próximo paso y meta
     goals: [
-      { title: "Qué busco", text: "Pasantías o posiciones junior en análisis funcional, análisis de datos o desarrollo." },
-      { title: "Cómo lo hago", text: "Complemento la carrera con proyectos propios, cursos y certificaciones, y documento todo en GitHub." },
-      { title: "Hacia dónde voy", text: "Un perfil híbrido: alguien que entiende el negocio y también sabe construir la solución." },
+      { stage: "Hoy", title: "Aprendo haciendo", text: "Complemento la carrera con proyectos propios, cursos y certificaciones, y documento todo en GitHub." },
+      { stage: "Próximo", title: "Mi primera pasantía", text: "Pasantías o posiciones junior en análisis funcional, análisis de datos o desarrollo." },
+      { stage: "Meta", title: "Un perfil híbrido", text: "Alguien que entiende el negocio y también sabe construir la solución." },
     ],
   },
 
@@ -103,8 +124,8 @@ export type Profile = typeof profile;
 
 export const sections = [
   { id: "sobre-mi", label: "Sobre mí" },
-  { id: "formacion", label: "Formación" },
   { id: "habilidades", label: "Habilidades" },
+  { id: "formacion", label: "Formación" },
   { id: "proyectos", label: "Proyectos" },
   { id: "contacto", label: "Contacto" },
 ] as const;
@@ -117,7 +138,7 @@ export function profileAsText() {
     `Rol: ${p.role} - ${p.location}`,
     `Formación: ${p.education.degree}, ${p.education.faculty} (${p.education.university}). ${p.education.status}.`,
     `Titular: ${p.headline}`,
-    `Sobre mí: ${p.about.join(" ")}`,
+    `Sobre mí: ${p.aboutLead} ${p.about.join(" ")} Reglas de trabajo: ${p.principles.join(" ")}`,
     `Herramientas: ${p.tools.map((t) => t.name).join(", ")}`,
     `Competencias: ${p.competencies.map((s) => `${s.group}: ${s.items.join(", ")}`).join(" | ")}`,
     `Intereses: ${p.interests.map((i) => i.title).join(", ")}`,

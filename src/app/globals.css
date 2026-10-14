@@ -2,71 +2,88 @@
 
 /* ---------- Temas ----------
    Oscuro es el predeterminado. El claro se activa con <html data-theme="light">
-   (lo maneja ThemeToggle y se recuerda en localStorage). */
+   (lo maneja ThemeToggle y se recuerda en localStorage).
+   Paleta: papel, tinta, carbón cálido y una sola brasa naranja como acento. */
 :root {
-  --bg: #0f0f10;
-  --surface: #18181a;
-  --ink: #f3f1ec;
-  --ink-2: #c4c1b8;
-  --muted: #8f8b83;
-  --line: #26262a;
-  --line-strong: #37373c;
-  --accent: #7c9dff;
-  --accent-ink: #0f0f10;
-  --accent-soft: #1a2240;
+  --bg: #0f0e0d;
+  --surface: #191815;
+  --ink: #ece6da;
+  --ink-2: #c2bbad;
+  --muted: #9c9486;
+  --line: #2a2824;
+  --line-strong: #3b3833;
+  --accent: #ff7a52;
+  --accent-ink: #1a0c06;
+  --accent-soft: #3a1d12;
   --warm: #e0946b;
   --warm-soft: #2c1f18;
-  --chart: #3987e5;
-  --chart-soft: rgba(57, 135, 229, 0.16);
+  --chart: #ff7a52;
+  --chart-soft: rgba(255, 122, 82, 0.16);
   --good: #34c46b;
   --bad: #e66767;
-  --wash: rgba(124, 157, 255, 0.09);
+  --wash: rgba(255, 122, 82, 0.06);
+  /* Relieve de las teclas de herramientas */
+  --tile-hi: #24221f;
+  --tile-lo: #191816;
+  --tile-edge: #070706;
   color-scheme: dark;
 }
 
-/* Claro: gris neutro frío y sin blancos puros. Contrastes medidos: texto de apoyo 4.9:1, resto más alto */
+/* Claro: gris cálido, sin blancos puros. Contrastes: texto de apoyo 5.3:1, acento 5:1 */
 :root[data-theme="light"] {
-  --bg: #f3f4f4;
-  --surface: #fbfbfb;
-  --ink: #1c1e22;
-  --ink-2: #474b53;
-  --muted: #656a73;
-  --line: #e0e2e6;
-  --line-strong: #cbced5;
-  --accent: #2f4fb0;
-  --accent-ink: #fbfbfb;
-  --accent-soft: #e2e7f6;
+  --bg: #f4f3f0;
+  --surface: #fbfaf8;
+  --ink: #1d1c1a;
+  --ink-2: #4f4d48;
+  --muted: #68665f;
+  --line: #dcdad4;
+  --line-strong: #c9c7c0;
+  --accent: #c13f1a;
+  --accent-ink: #fff7f2;
+  --accent-soft: #f6e1d8;
   --warm: #c9774c;
   --warm-soft: #eee6dd;
-  --chart: #2f6fc4;
-  --chart-soft: rgba(47, 111, 196, 0.1);
+  --chart: #c13f1a;
+  --chart-soft: rgba(193, 63, 26, 0.1);
   --good: #2f7a3e;
   --bad: #b03a2e;
-  --wash: rgba(47, 79, 176, 0.06);
+  --wash: rgba(193, 63, 26, 0.05);
+  --tile-hi: #ffffff;
+  --tile-lo: #eeece6;
+  --tile-edge: #d7d5ce;
   color-scheme: light;
 }
 
-/* Franja azul noche (Contacto + pie): redefine los colores para todo lo que está adentro */
-.band {
-  --bg: #151b31;
-  --surface: #1d2440;
-  --ink: #f3f1ec;
-  --ink-2: #c8cad6;
-  --muted: #8b90a6;
-  --line: #28304f;
-  --line-strong: #38416a;
-  --accent: #8fadff;
-  --accent-ink: #121729;
-  --accent-soft: #232e5c;
-  --warm: #f0a984;
-  --warm-soft: #3a2a2a;
-  --good: #34c46b;
-  --bad: #ff8a8a;
+/* "Salas": secciones que contrastan con el fondo general.
+   En claro son de noche; en oscuro, un escalón más arriba para que la página mantenga el ritmo. */
+.room {
+  --bg: #1d1b18;
+  --surface: #272520;
+  --ink: #efe9de;
+  --ink-2: #c7c0b2;
+  --muted: #a39b8c;
+  --line: #3a3731;
+  --line-strong: #4a4740;
+  --accent: #ff8a63;
+  --accent-ink: #1a0c06;
+  --accent-soft: #42251a;
+  --tile-hi: #312e29;
+  --tile-lo: #24221e;
+  --tile-edge: #100f0d;
   color-scheme: dark;
   background: var(--bg);
   color: var(--ink);
 }
-:root[data-theme="light"] .band { --bg: #121729; --surface: #1a2038; }
+:root[data-theme="light"] .room {
+  --bg: #151412;
+  --surface: #1f1d1a;
+  --line: #33302a;
+  --line-strong: #45413a;
+  --accent: #ff7a52;
+  --tile-hi: #2a2824;
+  --tile-lo: #1d1b18;
+  --tile-edge: #0b0a09;
+}
 
 @theme inline {
   --color-bg: var(--bg);
@@ -85,7 +102,7 @@
   --color-bad: var(--bad);
   --font-sans: var(--font-sans-body), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-serif-display), ui-serif, Georgia, serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+  --font-mono: var(--font-spline-mono), ui-monospace, "SFMono-Regular", monospace;
 }
 
 html {
@@ -113,15 +130,18 @@ a { text-underline-offset: 0.2em; }
   outline-offset: 3px;
 }
 
-.font-serif {
-  font-optical-sizing: auto;
-  letter-spacing: -0.005em;
-}
-
 /* Etiquetas técnicas en monoespaciada: el "idioma" de sistemas del sitio */
 .label-mono {
   font-family: var(--font-mono);
   font-size: 0.78rem;
+  color: var(--muted);
+}
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -132,15 +152,14 @@ a { text-underline-offset: 0.2em; }
   mix-blend-mode: normal;
 }
 
-/* Inicio: una luz fija y tenue arriba a la derecha (sin manchas flotando) */
+/* Fondo tenue del 404 */
 .hero-wash {
   background: radial-gradient(900px 480px at 88% -8%, var(--wash), transparent 70%);
 }
 
-/* ---------- Fondo vivo del inicio ---------- */
+/* Campo de puntos con una luz que recorre (fondo del 404) */
 @property --hx { syntax: "<percentage>"; inherits: true; initial-value: 70%; }
 @property --hy { syntax: "<percentage>"; inherits: true; initial-value: 40%; }
-/* Dos animaciones con duraciones distintas: la luz dibuja un recorrido que casi nunca se repite */
 .hero-field { animation: field-x 41s ease-in-out infinite alternate, field-y 29s ease-in-out infinite alternate; }
 @keyframes field-x { from { --hx: 16%; } to { --hx: 88%; } }
 @keyframes field-y { from { --hy: 20%; } to { --hy: 80%; } }
@@ -160,44 +179,7 @@ a { text-underline-offset: 0.2em; }
   background: radial-gradient(circle 320px at var(--hx) var(--hy), color-mix(in srgb, var(--accent) 18%, transparent), transparent 100%);
 }
 
-/* ---------- Tarjeta "ahora mismo" ---------- */
-@property --gx { syntax: "<percentage>"; inherits: true; initial-value: 82%; }
-@property --gy { syntax: "<percentage>"; inherits: true; initial-value: 12%; }
-.now-card {
-  position: relative;
-  isolation: isolate;
-  animation: now-gx 19s ease-in-out infinite alternate, now-gy 27s ease-in-out infinite alternate;
-}
-/* Un brillo ambiente que se desplaza despacio dentro de la tarjeta */
-.now-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  pointer-events: none;
-  background: radial-gradient(circle 280px at var(--gx) var(--gy), color-mix(in srgb, var(--accent) 13%, transparent), transparent 100%);
-}
-@keyframes now-gx { from { --gx: 82%; } to { --gx: 18%; } }
-@keyframes now-gy { from { --gy: 8%; } to { --gy: 70%; } }
-
-/* Las filas entran una tras otra cuando termina la entrada del inicio */
-.now-row {
-  animation: intro-up 0.9s var(--ease-out) backwards;
-  animation-delay: calc(var(--r, 0) * 140ms + 1000ms);
-}
-
-/* Onda lenta que sale del punto de disponibilidad y del ícono "buscando" */
-.now-ripple { animation: now-ripple 3.4s var(--ease-out) infinite; }
-@keyframes now-ripple {
-  0% { opacity: 0.5; transform: scale(1); }
-  70%, 100% { opacity: 0; transform: scale(1.7); }
-}
-
-/* ---------- Vida: color y movimiento ---------- */
-
-/* Luces de color que respiran detrás del inicio y del contacto.
-   Degradés radiales (sin blur) para que sea liviano. */
+/* Luz de color que respira (login del panel y 404) */
 .glow {
   background: radial-gradient(circle, var(--glow-color) 0%, transparent 66%);
   opacity: 0.32;
@@ -211,57 +193,6 @@ a { text-underline-offset: 0.2em; }
   100% { transform: translate3d(35px, -20px, 0) scale(0.97); }
 }
 
-/* Tarjetas con un brillo suave que sigue al mouse */
-.spotlight { position: relative; isolation: isolate; }
-.spotlight::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  opacity: 0;
-  transition: opacity 0.4s;
-  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), var(--accent-soft), transparent 70%);
-}
-.spotlight:hover::before { opacity: 1; }
-
-/* Herramientas: aura del color de la marca al pasar el mouse */
-.tool { position: relative; isolation: isolate; }
-.tool::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.4s;
-  background: radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--brand, var(--accent)) 22%, transparent), transparent 62%);
-}
-.tool:hover::before { opacity: 1; }
-
-/* ---------- Diagrama de proceso del inicio ---------- */
-.flow .flow-line {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: draw 1.2s var(--ease-out) forwards;
-  animation-delay: calc(var(--d, 0) * 180ms + 1300ms);
-}
-.flow .flow-node {
-  opacity: 0;
-  animation: node-in 0.6s var(--ease-out) forwards;
-  animation-delay: calc(var(--d, 0) * 180ms + 1200ms);
-}
-.flow .flow-pulse {
-  opacity: 0;
-  animation: node-in 0.4s ease forwards 3s;
-}
-@keyframes draw { to { stroke-dashoffset: 0; } }
-@keyframes node-in {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: none; }
-}
-
-/* ---------- Página 404 ---------- */
-
 /* Planeta del 404: el anillo punteado gira con su punto */
 .nf-orbit {
   translate: -50% -50%;
@@ -269,8 +200,26 @@ a { text-underline-offset: 0.2em; }
 }
 @keyframes nf-orbit { to { rotate: 360deg; } }
 
+/* Cursor que titila (404) */
+.caret { animation: caret 1.1s steps(1) infinite; }
+@keyframes caret { 50% { opacity: 0; } }
+
+/* ---------- Dibujos a mano (trazo, sin rellenos) ---------- */
+svg.draw { stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
+svg.draw .e { stroke: var(--accent); }
+svg.draw text { stroke: none; fill: currentColor; }
+svg.draw text.e { fill: var(--accent); }
+svg.draw text.m { fill: var(--muted); }
+
 /* ---------- Animaciones ---------- */
 :root { --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes intro-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes line-up { to { transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: none; } }
 
 /* Aparición suave al hacer scroll */
 .reveal {
@@ -278,134 +227,138 @@ a { text-underline-offset: 0.2em; }
   transform: translateY(18px);
   transition: opacity 0.9s ease, transform 0.9s var(--ease-out);
 }
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
+.reveal.is-visible { opacity: 1; transform: none; }
 
-/* Elementos hijos que aparecen en cascada.
+/* Hijos que aparecen en cascada.
    Usa `transform` (no `translate`) para no pisar los hover de Tailwind, que usan `translate` */
 .reveal [data-stagger] > * {
   opacity: 0;
   transform: translateY(12px);
   transition:
-    opacity 0.6s ease calc(var(--i, 0) * 60ms + 200ms),
-    transform 0.7s var(--ease-out) calc(var(--i, 0) * 60ms + 200ms),
+    opacity 0.6s ease calc(var(--i, 0) * 70ms + 150ms),
+    transform 0.7s var(--ease-out) calc(var(--i, 0) * 70ms + 150ms),
     translate 0.3s var(--ease-out),
-    scale 0.3s var(--ease-out),
     background-color 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s;
 }
-.reveal.is-visible [data-stagger] > * {
-  opacity: 1;
-  transform: none;
-}
+.reveal.is-visible [data-stagger] > * { opacity: 1; transform: none; }
 
-/* Encabezado de sección: la línea crece y el título sube desde una máscara */
-.section-bar {
-  width: 4.5rem;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.9s var(--ease-out) 0.25s;
-}
-.reveal.is-visible .section-bar { transform: scaleX(0.444); }
+/* Al tocar una sección del menú: el encabezado "se enciende" un momento */
+.section.is-targeted .kicker { color: var(--accent); transition: color 0.3s; }
 
-.section-title { overflow: hidden; padding-bottom: 0.08em; }
-.section-title-inner {
-  display: inline-block;
-  transform: translateY(105%);
-  transition: transform 1s var(--ease-out) 0.1s, color 0.5s ease;
-  background-image: linear-gradient(var(--warm-soft), var(--warm-soft));
-  background-repeat: no-repeat;
-  background-position: 0 88%;
-  background-size: 0% 0.32em;
-}
-.reveal.is-visible .section-title-inner { transform: none; }
-
-/* Al tocar una sección del menú: la sección "se enciende" un momento */
-.section.is-targeted .section-bar {
-  transform: scaleX(1);
-  transition-delay: 0s;
-}
-.section.is-targeted .section-title-inner {
-  color: var(--accent);
-  animation: title-mark 1.8s var(--ease-out);
-}
-.section.is-targeted .reveal > div:last-child {
-  animation: content-nudge 0.9s var(--ease-out);
-}
-@keyframes title-mark {
-  0% { background-size: 0% 0.32em; }
-  40%, 80% { background-size: 100% 0.32em; }
-  100% { background-size: 100% 0.32em; }
-}
-@keyframes content-nudge {
-  0% { transform: translateY(12px); opacity: 0.5; }
-  100% { transform: none; opacity: 1; }
-}
-
-/* Entrada del inicio: cada bloque sube en secuencia */
+/* Entrada del inicio: cada bloque sube en secuencia; el nombre sube desde una máscara */
 .intro > * {
   opacity: 0;
   animation: intro-up 1s var(--ease-out) forwards;
-  animation-delay: calc(var(--d, 0) * 130ms + 100ms);
+  animation-delay: calc(var(--d, 0) * 110ms + 100ms);
 }
-.intro-line { display: block; overflow: hidden; padding-bottom: 0.08em; }
+.intro-line { display: block; overflow: hidden; padding-bottom: 0.06em; }
 .intro-line > span {
   display: inline-block;
   transform: translateY(110%);
   animation: line-up 1.1s var(--ease-out) forwards;
-  animation-delay: calc(var(--d, 0) * 130ms + 150ms);
-}
-@keyframes intro-up {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: none; }
-}
-@keyframes line-up {
-  to { transform: none; }
+  animation-delay: calc(var(--d, 0) * 120ms + 150ms);
 }
 
-/* Cursor de "sistema" que titila junto al estado */
-.caret { animation: caret 1.1s steps(1) infinite; }
-@keyframes caret { 50% { opacity: 0; } }
-
-/* Palabras destacadas: subrayado que se dibuja al cargar */
-.hl {
-  background-image: linear-gradient(var(--accent-soft), var(--accent-soft));
-  background-repeat: no-repeat;
-  background-position: 0 90%;
-  background-size: 0% 0.35em;
-  animation: hl-draw 0.9s var(--ease-out) forwards;
-  animation-delay: 1.2s;
+/* Subrayado a mano que se dibuja al cargar */
+.hand path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 0.9s cubic-bezier(0.6, 0.1, 0.3, 1) 1.1s forwards;
 }
-@keyframes hl-draw { to { background-size: 100% 0.35em; } }
 
-/* Líneas verticales que se "dibujan" de arriba hacia abajo */
-.reveal .grow-y {
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: transform 1.4s var(--ease-out) 0.4s;
+/* ---------- Tablero "En este momento" ---------- */
+.board-row {
+  opacity: 0;
+  animation: intro-up 0.7s var(--ease-out) forwards;
+  animation-delay: calc(700ms + var(--r, 0) * 140ms);
 }
-.reveal.is-visible .grow-y { transform: none; }
+.spark .l { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.4s cubic-bezier(0.5, 0, 0.2, 1) 1.5s forwards; }
+.spark circle { opacity: 0; transform-box: fill-box; transform-origin: center; animation: pop 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) 2.85s forwards; }
+.live { animation: breathe 2.6s ease-in-out infinite; }
+@keyframes breathe { 50% { opacity: 0.35; } }
 
-/* Logos de herramientas: monocromos; toman el color de la marca al pasar el mouse */
-.tool:hover .tool-logo { color: var(--brand, var(--accent)); }
+/* ---------- Línea que se desenreda ---------- */
+.untangle-tag {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  padding-bottom: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+}
+.flat-line path.l { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.reveal.is-visible .flat-line path.l { animation: draw 2s cubic-bezier(0.5, 0, 0.2, 1) 0.2s forwards; }
+.flat-line .n { opacity: 0; }
+.reveal.is-visible .flat-line .n { animation: intro-up 0.6s var(--ease-out) forwards; animation-delay: calc(1.4s + var(--k, 0) * 150ms); }
 
-/* Los efectos se muestran siempre, aunque el sistema tenga "reducir movimiento" o el
-   modo rendimiento activado: es una decisión de diseño de este sitio. Quien quiera
-   frenarlos usa el botón de pausa del encabezado (html[data-motion="off"]). */
+/* ---------- Dibujos de "Qué me interesa" ---------- */
+.glyph .bar { transform-box: fill-box; transform-origin: bottom; }
+.glyph .arrow, .glyph .cursor { transform-box: fill-box; }
+.glyph .hub { transform-box: fill-box; transform-origin: center; }
+.play .glyph .bar { animation: g-grow 0.7s cubic-bezier(0.3, 1.4, 0.5, 1) both; animation-delay: calc(var(--b) * 70ms); }
+.play .glyph .trend { stroke-dasharray: 1; animation: g-redraw 1s 0.35s cubic-bezier(0.5, 0, 0.2, 1) both; }
+.play .glyph .link { stroke-dasharray: 1; animation: g-redraw 0.5s both; animation-delay: calc(var(--b) * 120ms); }
+.play .glyph .hub { animation: g-hub 0.9s 0.45s ease-out; }
+.play .glyph .arrow { animation: g-slide 1s ease-in-out; }
+.play .glyph .screen { animation: g-blink 1s ease-in-out; }
+.play .glyph .cursor { animation: g-click 0.9s cubic-bezier(0.3, 0.7, 0.3, 1); transform-origin: 20% 10%; }
+.play .glyph .btnfill { animation: g-btn 0.9s; }
+@keyframes g-grow { from { transform: scaleY(0.15); } }
+@keyframes g-redraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes g-hub { 40% { transform: scale(1.35); } }
+@keyframes g-slide { 50% { transform: translateX(6px); } }
+@keyframes g-blink { 45%, 60% { stroke: var(--accent); } }
+@keyframes g-click { 30% { transform: translate(-10px, -8px); } 55% { transform: translate(-10px, -8px) scale(0.8); } 75% { transform: translate(-10px, -8px) scale(1); } }
+@keyframes g-btn { 50%, 75% { fill: var(--accent); fill-opacity: 0.18; } }
+
+/* ---------- Formación: los tres círculos se juntan ---------- */
+.venn .c { transition: transform 1.3s var(--ease-out); }
+.venn .c1 { transform: translate(0, -40px); }
+.venn .c2 { transform: translate(-50px, 30px); }
+.venn .c3 { transform: translate(50px, 30px); }
+.reveal.is-visible .venn .c { transform: none; }
+.venn .me { opacity: 0; transition: opacity 0.5s 1.2s; }
+.reveal.is-visible .venn .me { opacity: 1; }
+.venn .arrow { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.8s 1.4s cubic-bezier(0.5, 0, 0.2, 1); }
+.reveal.is-visible .venn .arrow { stroke-dashoffset: 0; }
+
+/* ---------- "Hacia dónde voy": el camino se dibuja con el scroll (--p de 0 a 1) ---------- */
+.route { --p: 0; }
+.route-track { clip-path: inset(0 calc((1 - var(--p)) * 100%) 0 0); }
+.route-track-y { clip-path: inset(0 0 calc((1 - var(--p)) * 100%) 0); }
+.route-stop { transform: scale(0); transition: transform 0.4s cubic-bezier(0.3, 1.6, 0.5, 1); }
+.route-stop.on { transform: none; }
+.route-step { opacity: 0.3; transition: opacity 0.5s; }
+.route-step.on { opacity: 1; }
+
+/* ---------- Herramientas: teclas con relieve que se hunden ---------- */
+.tile {
+  background: linear-gradient(170deg, var(--tile-hi), var(--tile-lo));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 -4px 0 var(--tile-edge);
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), border-color 0.3s;
+}
+.tile:hover { transform: translateY(2px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 -2px 0 var(--tile-edge); border-color: var(--line-strong); }
+.tile:hover .tool-logo { color: var(--brand, var(--accent)); }
+
+/* Los efectos se muestran siempre, aunque el sistema tenga "reducir movimiento":
+   es una decisión de diseño de este sitio. Quien quiera frenarlos usa el botón de pausa
+   del encabezado (html[data-motion="off"]); ahí todo queda quieto y completo. */
 :root[data-motion="off"] {
-  .caret, .animate-ping, .animate-pulse, .glow, .hero-field, .now-card, .now-row, .now-ripple, .nf-orbit { animation: none; }
-  .reveal, .reveal [data-stagger] > *, .intro > *, .intro-line > span {
+  .glow, .hero-field, .nf-orbit, .caret, .live, .board-row, .intro > *, .intro-line > span, .hand path, .spark .l, .spark circle,
+  .flat-line path.l, .flat-line .n, .play .glyph * { animation: none; }
+  .reveal, .reveal [data-stagger] > *, .intro > *, .intro-line > span, .board-row, .flat-line .n {
     opacity: 1;
     transform: none;
     transition: none;
-    animation: none;
   }
-  .section-title-inner, .reveal .grow-y { transform: none; transition: none; }
-  .section-bar { transform: scaleX(0.444); transition: none; }
-  .hl { animation: none; background-size: 100% 0.35em; }
-  .flow .flow-line { animation: none; stroke-dashoffset: 0; }
-  .flow .flow-node, .flow .flow-pulse { animation: none; opacity: 1; }
+  .hand path, .spark .l, .flat-line path.l, .venn .arrow { stroke-dashoffset: 0; transition: none; }
+  .spark circle, .venn .me { opacity: 1; transition: none; }
+  .venn .c { transform: none; transition: none; }
+  .route { --p: 1; }
+  .route-stop { transform: none; transition: none; }
+  .route-step { opacity: 1; transition: none; }
+  .tile { transition: none; }
 }
 
 .tabular { font-variant-numeric: tabular-nums; }

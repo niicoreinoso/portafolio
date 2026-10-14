@@ -5,7 +5,7 @@ import { highlightSection, smoothScrollTo } from "@/lib/scroll";
 
 /**
  * Comportamiento visual de la página (no pinta nada por sí mismo):
- * aparición al hacer scroll, brillo de tarjetas y links internos.
+ * aparición al hacer scroll, dibujos que se animan y links internos.
  */
 export default function Effects() {
   useEffect(() => {
@@ -28,16 +28,31 @@ export default function Effects() {
       Array.from(list.children).forEach((child, i) => (child as HTMLElement).style.setProperty("--i", String(i)));
     });
 
-    // Brillo que sigue al mouse dentro de las tarjetas .spotlight (solo con puntero fino)
-    const onPointerMove = (e: PointerEvent) => {
-      const card = (e.target as HTMLElement).closest<HTMLElement>(".spotlight");
-      if (!card) return;
-      const r = card.getBoundingClientRect();
-      card.style.setProperty("--mx", `${e.clientX - r.left}px`);
-      card.style.setProperty("--my", `${e.clientY - r.top}px`);
+    // Dibujos de "Qué me interesa": se animan una vez al aparecer y cada vez que se pasa el mouse
+    const play = (card: Element) => {
+      if (document.documentElement.dataset.motion === "off") return;
+      card.classList.remove("play");
+      void (card as HTMLElement).offsetWidth; // reinicia la animación
+      card.classList.add("play");
     };
-    const finePointer = window.matchMedia("(pointer: fine)").matches;
-    if (finePointer) document.addEventListener("pointermove", onPointerMove, { passive: true });
+    const glyphTimers: ReturnType<typeof setTimeout>[] = [];
+    const glyphObs = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const i = Number((e.target as HTMLElement).style.getPropertyValue("--i")) || 0;
+          glyphTimers.push(setTimeout(() => play(e.target), 500 + i * 150));
+          glyphObs.unobserve(e.target);
+        }
+      },
+      { threshold: 0.4 },
+    );
+    const glyphCards = document.querySelectorAll("[data-glyph]");
+    const onGlyphEnter = (e: Event) => play(e.currentTarget as Element);
+    glyphCards.forEach((card) => {
+      glyphObs.observe(card);
+      card.addEventListener("pointerenter", onGlyphEnter);
+    });
 
     // Todos los links internos (#seccion) bajan con desplazamiento animado
     const onClick = (e: MouseEvent) => {
@@ -63,8 +78,10 @@ export default function Effects() {
 
     return () => {
       revealObs.disconnect();
+      glyphObs.disconnect();
+      glyphTimers.forEach(clearTimeout);
+      glyphCards.forEach((card) => card.removeEventListener("pointerenter", onGlyphEnter));
       document.removeEventListener("click", onClick);
-      document.removeEventListener("pointermove", onPointerMove);
       clearTimeout(t1);
       clearTimeout(t2);
     };
