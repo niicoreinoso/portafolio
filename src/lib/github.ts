@@ -94,3 +94,32 @@ export async function getGitHubUser(): Promise<GitHubUser | null> {
     return null;
   }
 }
+
+export type RepoActivity = {
+  name: string;
+  url: string;
+  pushedAt: string;
+  /** Commits por semana de las últimas 12 semanas; null si GitHub todavía no las calculó. */
+  weeks: number[] | null;
+};
+
+/** Último cambio y actividad semanal de un repo, para el tablero del inicio. Se cachea 1 hora. */
+export async function getRepoActivity(name: string): Promise<RepoActivity | null> {
+  const base = `https://api.github.com/repos/${profile.github}/${name}`;
+  const opts = { headers: headers(), next: { revalidate: 3600 }, signal: AbortSignal.timeout(8_000) };
+  try {
+    const res = await fetch(base, opts);
+    if (!res.ok) return null;
+    const repo = await res.json();
+    let weeks: number[] | null = null;
+    // GitHub calcula estas estadísticas en segundo plano: la primera vez responde 202 sin datos
+    const stats = await fetch(`${base}/stats/commit_activity`, opts).catch(() => null);
+    if (stats?.status === 200) {
+      const data = (await stats.json()) as { total: number }[];
+      if (Array.isArray(data) && data.length) weeks = data.slice(-12).map((w) => w.total);
+    }
+    return { name: repo.name, url: repo.html_url, pushedAt: repo.pushed_at, weeks };
+  } catch {
+    return null;
+  }
+}

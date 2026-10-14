@@ -5,7 +5,7 @@ import { profile } from "@/content/profile";
 import { Check, Copy } from "@/components/icons";
 
 const field =
-  "w-full rounded-lg border border-line bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-muted outline-none transition focus:border-ink-2";
+  "w-full rounded-xl border border-line bg-surface px-4 py-3.5 text-[15px] text-ink placeholder:text-muted outline-none transition focus:border-ink-2";
 
 export function CopyEmail() {
   const [copied, setCopied] = useState(false);
@@ -81,7 +81,7 @@ export default function ContactForm() {
       <div className="flex flex-wrap items-center gap-4">
         <button
           disabled={status === "sending"}
-          className="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-bg transition-opacity hover:opacity-85 disabled:opacity-50"
+          className="rounded-full bg-accent px-6 py-3.5 text-[15px] font-semibold text-accent-ink transition-[opacity,transform] hover:opacity-90 active:scale-[0.97] disabled:opacity-50"
         >
           {status === "sending" ? "Enviando…" : "Enviar mensaje"}
         </button>
