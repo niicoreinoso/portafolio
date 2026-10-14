@@ -260,6 +260,15 @@ a { text-underline-offset: 0.2em; }
   to { opacity: 1; transform: none; }
 }
 
+/* ---------- Página 404 ---------- */
+
+/* Planeta del 404: el anillo punteado gira con su punto */
+.nf-orbit {
+  translate: -50% -50%;
+  animation: nf-orbit 16s linear infinite;
+}
+@keyframes nf-orbit { to { rotate: 360deg; } }
+
 /* ---------- Animaciones ---------- */
 :root { --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1); }
 
@@ -385,7 +394,7 @@ a { text-underline-offset: 0.2em; }
    modo rendimiento activado: es una decisión de diseño de este sitio. Quien quiera
    frenarlos usa el botón de pausa del encabezado (html[data-motion="off"]). */
 :root[data-motion="off"] {
-  .caret, .animate-ping, .animate-pulse, .glow, .hero-field, .now-card, .now-row, .now-ripple { animation: none; }
+  .caret, .animate-ping, .animate-pulse, .glow, .hero-field, .now-card, .now-row, .now-ripple, .nf-orbit { animation: none; }
   .reveal, .reveal [data-stagger] > *, .intro > *, .intro-line > span {
     opacity: 1;
     transform: none;
