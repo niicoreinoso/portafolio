@@ -6,7 +6,8 @@ import "./globals.css";
 // Tipografías poco vistas a propósito: una grotesca con carácter para todo el texto,
 // una serif cálida solo para detalles (números, citas) y una mono para etiquetas.
 const sans = Schibsted_Grotesk({ subsets: ["latin"], variable: "--font-sans-body" });
-const serif = Young_Serif({ subsets: ["latin"], weight: "400", variable: "--font-serif-display" });
+// La serif solo aparece debajo del primer pantallazo: no se precarga para no competir con la carga inicial
+const serif = Young_Serif({ subsets: ["latin"], weight: "400", variable: "--font-serif-display", preload: false });
 const mono = Spline_Sans_Mono({ subsets: ["latin"], variable: "--font-spline-mono" });
 
 export const metadata: Metadata = {

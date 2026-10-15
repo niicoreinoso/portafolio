@@ -67,11 +67,11 @@ export default function GitHubView({ repos, user }: { repos: Repo[] | null; user
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-line text-left">
-                    <th className="label-mono px-5 pb-2 font-normal">nombre</th>
-                    <th className="label-mono px-2 pb-2 font-normal">lenguaje</th>
-                    <th className="label-mono px-2 pb-2 text-right font-normal">★</th>
-                    <th className="label-mono px-2 pb-2 font-normal">checklist</th>
-                    <th className="label-mono px-5 pb-2 text-right font-normal">actualizado</th>
+                    <th className="kicker px-5 pb-2 font-normal">nombre</th>
+                    <th className="kicker px-2 pb-2 font-normal">lenguaje</th>
+                    <th className="kicker px-2 pb-2 text-right font-normal">★</th>
+                    <th className="kicker px-2 pb-2 font-normal">checklist</th>
+                    <th className="kicker px-5 pb-2 text-right font-normal">actualizado</th>
                   </tr>
                 </thead>
                 <tbody className="tabular">

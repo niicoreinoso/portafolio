@@ -10,7 +10,7 @@ const PRESETS = ["linkedin", "cv", "github", "email", "instagram", "whatsapp"];
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="label-mono">{label}</span>
+      <span className="kicker">{label}</span>
       <div className="mt-1.5">{children}</div>
     </label>
   );
@@ -113,7 +113,7 @@ export default function SettingsView({ initial, gemini, chatAvailable }: { initi
             <input value={s.availableText} maxLength={80} onChange={(e) => setS({ ...s, availableText: e.target.value })} className={inputCls} />
           </Field>
 
-          <p className="label-mono border-t border-line pt-5">tarjeta “ahora mismo”</p>
+          <p className="kicker border-t border-line pt-5">tarjeta “ahora mismo”</p>
           <Field label="cursando">
             <input value={s.now.studying} maxLength={80} onChange={(e) => setNow("studying", e.target.value)} className={inputCls} />
           </Field>

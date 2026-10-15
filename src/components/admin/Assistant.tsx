@@ -102,7 +102,7 @@ export default function Assistant({
 
   if (!enabled) {
     return (
-      <div className="rounded-xl border border-dashed border-line-strong p-8">
+      <div className="rounded-[22px] border border-dashed border-line-strong p-8">
         <p className="font-medium">Conectá Gemini para activar el asistente</p>
         <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-sm text-ink-2">
           <li>
@@ -126,7 +126,7 @@ export default function Assistant({
       <aside className="space-y-5">
         {["Analizar", "Crear", "Crecer"].map((g) => (
           <div key={g}>
-            <p className="label-mono mb-2">{g}</p>
+            <p className="kicker mb-2">{g}</p>
             <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-1">
               {QUICK_ACTIONS.filter((a) => a.group === g).map((a) => (
                 <button
@@ -148,7 +148,7 @@ export default function Assistant({
         <p className="font-mono text-[10px] text-muted">modelo: {model}</p>
       </aside>
 
-      <div className="flex flex-col rounded-xl border border-line bg-surface">
+      <div className="flex flex-col overflow-hidden rounded-[22px] border border-line bg-surface">
         <div className="flex items-center justify-between border-b border-line px-5 py-3">
           <p className="text-sm font-medium">Conversación</p>
           {messages.length > 0 && (
@@ -161,7 +161,7 @@ export default function Assistant({
           {messages.length === 0 && !loading && (
             <div className="flex h-full flex-col items-center justify-center text-center">
               <Sparkle width={22} height={22} className="text-accent" />
-              <p className="mt-3 font-serif text-xl">¿En qué te ayudo hoy?</p>
+              <p className="mt-3 text-2xl font-bold tracking-[-0.03em]">¿En qué te ayudo hoy?</p>
               <p className="mt-2 max-w-sm text-sm text-muted">
                 Elegí una acción o preguntá lo que quieras. El asistente conoce tu perfil, tus repos, las métricas del sitio y lo que pregunta la gente en el chatbot.
               </p>
