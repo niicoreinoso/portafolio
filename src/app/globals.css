@@ -152,12 +152,7 @@ a { text-underline-offset: 0.2em; }
   mix-blend-mode: normal;
 }
 
-/* Fondo tenue del 404 */
-.hero-wash {
-  background: radial-gradient(900px 480px at 88% -8%, var(--wash), transparent 70%);
-}
-
-/* Campo de puntos con una luz que recorre (fondo del 404) */
+/* Campo de puntos con una luz que recorre (fondo del login del panel) */
 @property --hx { syntax: "<percentage>"; inherits: true; initial-value: 70%; }
 @property --hy { syntax: "<percentage>"; inherits: true; initial-value: 40%; }
 .hero-field { animation: field-x 41s ease-in-out infinite alternate, field-y 29s ease-in-out infinite alternate; }
@@ -179,30 +174,9 @@ a { text-underline-offset: 0.2em; }
   background: radial-gradient(circle 320px at var(--hx) var(--hy), color-mix(in srgb, var(--accent) 18%, transparent), transparent 100%);
 }
 
-/* Luz de color que respira (login del panel y 404) */
-.glow {
-  background: radial-gradient(circle, var(--glow-color) 0%, transparent 66%);
-  opacity: 0.32;
-  will-change: transform;
-  animation: float 16s ease-in-out infinite alternate;
-}
-:root[data-theme="light"] .glow { opacity: 0.22; }
-@keyframes float {
-  0% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(-30px, 25px, 0) scale(1.06); }
-  100% { transform: translate3d(35px, -20px, 0) scale(0.97); }
-}
-
-/* Planeta del 404: el anillo punteado gira con su punto */
-.nf-orbit {
-  translate: -50% -50%;
-  animation: nf-orbit 16s linear infinite;
-}
-@keyframes nf-orbit { to { rotate: 360deg; } }
-
-/* Cursor que titila (404) */
-.caret { animation: caret 1.1s steps(1) infinite; }
-@keyframes caret { 50% { opacity: 0; } }
+/* 404: la línea se dibuja y se corta */
+.nf-line path.l { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.4s cubic-bezier(0.5, 0, 0.2, 1) 0.4s forwards; }
+.nf-line .n { opacity: 0; animation: intro-up 0.6s var(--ease-out) forwards; animation-delay: calc(0.6s + var(--k, 0) * 260ms); }
 
 /* ---------- Dibujos a mano (trazo, sin rellenos) ---------- */
 svg.draw { stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
@@ -345,8 +319,10 @@ svg.draw text.m { fill: var(--muted); }
    es una decisión de diseño de este sitio. Quien quiera frenarlos usa el botón de pausa
    del encabezado (html[data-motion="off"]); ahí todo queda quieto y completo. */
 :root[data-motion="off"] {
-  .glow, .hero-field, .nf-orbit, .caret, .live, .board-row, .intro > *, .intro-line > span, .hand path, .spark .l, .spark circle,
-  .flat-line path.l, .flat-line .n, .play .glyph * { animation: none; }
+  .hero-field, .live, .board-row, .intro > *, .intro-line > span, .hand path, .spark .l, .spark circle,
+  .flat-line path.l, .flat-line .n, .play .glyph *, .nf-line path.l, .nf-line .n { animation: none; }
+  .nf-line path.l { stroke-dashoffset: 0; }
+  .nf-line .n { opacity: 1; }
   .reveal, .reveal [data-stagger] > *, .intro > *, .intro-line > span, .board-row, .flat-line .n {
     opacity: 1;
     transform: none;

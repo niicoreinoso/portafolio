@@ -230,9 +230,9 @@ export function StatTile({
     }
   }
   return (
-    <div className="rounded-xl border border-line bg-surface p-5">
-      <p className="label-mono">{label}</p>
-      <p className="mt-2 font-serif text-3xl tracking-tight">{value}</p>
+    <div className="rounded-[22px] border border-line bg-surface p-6">
+      <p className="kicker">{label}</p>
+      <p className="tabular mt-3 font-serif text-4xl leading-none">{value}</p>
       <p className="mt-1 min-h-4 text-xs">
         {delta} {hint && <span className="text-muted">{hint}</span>}
       </p>

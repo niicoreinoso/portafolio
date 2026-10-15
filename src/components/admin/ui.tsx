@@ -12,10 +12,10 @@ export function Card({
   className?: string;
 }) {
   return (
-    <div className={`rounded-xl border border-line bg-surface p-5 ${className}`}>
+    <div className={`rounded-[22px] border border-line bg-surface p-6 ${className}`}>
       {(title || action) && (
         <div className="mb-4 flex items-center justify-between gap-3">
-          {title && <h3 className="text-sm font-medium">{title}</h3>}
+          {title && <h3 className="font-bold tracking-[-0.01em]">{title}</h3>}
           {action}
         </div>
       )}
@@ -45,7 +45,7 @@ export function Button({
   return (
     <button
       {...props}
-      className={`inline-flex items-center justify-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors disabled:pointer-events-none disabled:opacity-40 ${styles} ${className}`}
+      className={`inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition-[transform,background-color,border-color,color] active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40 ${styles} ${className}`}
     />
   );
 }
@@ -66,4 +66,4 @@ export function Toggle({ checked, onChange, label }: { checked: boolean; onChang
 }
 
 export const inputCls =
-  "w-full rounded-lg border border-line bg-bg px-3.5 py-2.5 text-sm text-ink outline-none transition placeholder:text-muted focus:border-accent";
+  "w-full rounded-xl border border-line bg-bg px-4 py-3 text-[15px] text-ink outline-none transition placeholder:text-muted focus:border-ink-2";

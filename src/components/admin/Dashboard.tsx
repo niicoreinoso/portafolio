@@ -77,23 +77,22 @@ export default function Dashboard({
     <div className="min-h-screen lg:grid lg:grid-cols-[232px_1fr]">
       {/* Barra lateral (escritorio) */}
       <aside className="sticky top-0 hidden h-screen flex-col border-r border-line px-4 py-6 lg:flex">
-        <Link href="/" target="_blank" className="group px-2 font-serif text-lg">
+        <Link href="/" target="_blank" className="group px-2 text-[15px] font-bold tracking-[-0.01em]">
           {profile.name}
-          <span className="text-accent">.</span>
+          <span className="inline-block text-accent transition-transform duration-300 group-hover:scale-150">.</span>
         </Link>
-        <p className="label-mono mt-1 px-2">panel</p>
+        <p className="kicker mt-1.5 px-2">Panel</p>
 
-        <nav className="mt-8 space-y-0.5" aria-label="Secciones del panel">
+        <nav className="mt-8 space-y-1" aria-label="Secciones del panel">
           {TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => go(t.id)}
               aria-current={tab === t.id ? "page" : undefined}
-              className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
-                tab === t.id ? "bg-accent-soft text-accent" : "text-ink-2 hover:bg-surface hover:text-ink"
+              className={`relative flex w-full items-center gap-3 rounded-full px-3.5 py-2 text-sm transition-colors ${
+                tab === t.id ? "bg-accent-soft font-semibold text-accent" : "text-ink-2 hover:bg-surface hover:text-ink"
               }`}
             >
-              {tab === t.id && <span className="absolute top-2 bottom-2 -left-4 w-0.5 rounded-full bg-accent" />}
               <span className="[&>svg]:size-4">{t.icon}</span>
               {t.label}
               {t.id === "mensajes" && unread > 0 && (
@@ -112,7 +111,7 @@ export default function Dashboard({
             <Logout width={14} height={14} /> Cerrar sesión
           </button>
           <div className="flex items-center justify-between px-2 pt-1">
-            <span className="label-mono">tema</span>
+            <span className="kicker">Tema</span>
             <ThemeToggle />
           </div>
         </div>
@@ -122,7 +121,7 @@ export default function Dashboard({
         {/* Barra superior (celular) */}
         <header className="sticky top-0 z-30 border-b border-line bg-bg/95 lg:hidden">
           <div className="flex h-14 items-center justify-between px-5">
-            <p className="font-serif text-lg">
+            <p className="text-lg font-extrabold tracking-[-0.04em]">
               Panel<span className="text-accent">.</span>
             </p>
             <div className="flex items-center gap-3">
@@ -151,8 +150,12 @@ export default function Dashboard({
           {/* Encabezado de la vista */}
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <h1 className="font-serif text-3xl sm:text-4xl">{current.label}</h1>
-              <p className="mt-1 text-sm text-muted">{current.hint}</p>
+              <p className="kicker">Panel · {String(TABS.indexOf(current) + 1).padStart(2, "0")}</p>
+              <h1 className="mt-3 text-[2.4rem] leading-[1.02] font-bold tracking-[-0.04em] sm:text-5xl">
+                {current.label}
+                <span className="text-accent">.</span>
+              </h1>
+              <p className="mt-2 text-[15px] text-ink-2">{current.hint}</p>
             </div>
             {RANGE_TABS.includes(tab) && (
               <div className="flex rounded-full border border-line p-0.5 text-xs" aria-label="Rango de fechas">

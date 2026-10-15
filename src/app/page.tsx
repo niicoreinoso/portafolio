@@ -264,8 +264,9 @@ export default async function Home() {
       <div className="room">
         <Section id="contacto" index={5} label="Contacto" room>
           <div className="mt-6 grid gap-14 lg:grid-cols-2 lg:gap-16">
-            <div className="reveal">
-              <p className="text-[clamp(4rem,14vw,7rem)] leading-[0.9] font-extrabold tracking-[-0.05em]">
+            {/* El titular se escala con el ancho de su columna (cqi), no de la ventana: así nunca invade el formulario */}
+            <div className="reveal @container min-w-0">
+              <p className="text-[clamp(3rem,19cqi,7rem)] leading-[0.9] font-extrabold tracking-[-0.05em]">
                 Hablemos<span className="text-accent">.</span>
               </p>
               <p className="mt-6 max-w-md text-lg leading-relaxed text-ink-2">

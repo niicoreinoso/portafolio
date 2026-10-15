@@ -97,11 +97,11 @@ export default function Messages({
       </div>
 
       {shown.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-line-strong">
+        <div className="rounded-[22px] border border-dashed border-line-strong">
           <Empty>{query ? "Ningún mensaje coincide con la búsqueda." : "No hay mensajes acá todavía."}</Empty>
         </div>
       ) : (
-        <div className="grid overflow-hidden rounded-xl border border-line bg-surface lg:grid-cols-[320px_1fr]">
+        <div className="grid overflow-hidden rounded-[22px] border border-line bg-surface lg:grid-cols-[320px_1fr]">
           {/* Lista */}
           <ul className="max-h-[65vh] divide-y divide-line overflow-y-auto border-line lg:border-r">
             {shown.map((m) => (
@@ -127,7 +127,7 @@ export default function Messages({
             <article className="flex flex-col p-6">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="font-serif text-xl">{open.name}</p>
+                  <p className="text-xl font-bold tracking-[-0.02em]">{open.name}</p>
                   <a href={`mailto:${open.email}`} className="text-sm text-accent hover:underline">{open.email}</a>
                 </div>
                 <p className="font-mono text-[11px] text-muted">{fmt.format(new Date(open.t))}</p>

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import V3Monumental from "@/components/site/not-found/V3Monumental";
+import Broken from "@/components/site/not-found/Broken";
 
 export const metadata: Metadata = { title: "Página no encontrada" };
 
 export default function NotFound() {
-  return <V3Monumental />;
+  return <Broken />;
 }

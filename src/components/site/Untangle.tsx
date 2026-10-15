@@ -59,7 +59,19 @@ function Tube() {
     let disposed = false;
     let cleanup = () => {};
 
-    import("three").then((THREE) => {
+    // Three.js pesa ~170 KB comprimido: se descarga recién cuando la sección empieza a asomar
+    // (la sección arranca justo debajo del inicio, así que alcanza con el primer scroll)
+    const near = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        near.disconnect();
+        start();
+      },
+      { rootMargin: "0px 0px -10% 0px" },
+    );
+    if (pinRef.current) near.observe(pinRef.current);
+
+    const start = () => import("three").then((THREE) => {
       const pin = pinRef.current;
       const canvas = canvasRef.current;
       if (disposed || !pin || !canvas) return;
@@ -144,9 +156,13 @@ function Tube() {
       let clock = 0;
       let raf = 0;
       const v = new THREE.Vector3();
+      // El bucle solo corre mientras la sección está en pantalla
       const frame = () => {
+        if (!visible) {
+          raf = 0;
+          return;
+        }
         raf = requestAnimationFrame(frame);
-        if (!visible) return;
         clock += 0.016;
         const t = progress();
         if (Math.abs(t - last) > 0.0005) {
@@ -175,13 +191,19 @@ function Tube() {
         renderer.render(scene, camera);
       };
 
-      const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting), { rootMargin: "100px" });
+      const io = new IntersectionObserver(
+        ([e]) => {
+          visible = e.isIntersecting;
+          if (visible && !raf) frame();
+        },
+        { rootMargin: "100px" },
+      );
       io.observe(pin);
       window.addEventListener("resize", resize);
       resize();
       applyTheme();
       build(0);
-      frame();
+      renderer.render(scene, camera);
 
       cleanup = () => {
         cancelAnimationFrame(raf);
@@ -198,6 +220,7 @@ function Tube() {
 
     return () => {
       disposed = true;
+      near.disconnect();
       cleanup();
     };
   }, []);

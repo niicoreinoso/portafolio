@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import HeroField from "@/components/site/HeroField";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -30,45 +31,50 @@ export default function LoginPage() {
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-5">
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="glow absolute -top-60 -right-40 size-[640px] rounded-full [--glow-color:var(--accent)]" />
-        <div className="glow absolute -bottom-60 -left-40 size-[520px] rounded-full [--glow-color:var(--warm)] [animation-delay:-8s]" />
-      </div>
+      <HeroField />
 
-      <form onSubmit={onSubmit} className="relative w-full max-w-sm rounded-3xl border border-line bg-surface p-8">
-        <p className="label-mono">acceso privado</p>
-        <h1 className="mt-3 font-serif text-3xl">
-          Panel<span className="text-accent">.</span>
-        </h1>
-        <p className="mt-1 text-sm text-muted">Ingresá tu contraseña de administrador.</p>
-        <label className="mt-8 block">
-          <span className="label-mono">contraseña</span>
-          <span className="relative mt-2 block">
-            <input
-              name="password"
-              type={show ? "text" : "password"}
-              required
-              autoFocus
-              autoComplete="current-password"
-              className="w-full rounded-lg border border-line bg-bg py-2.5 pr-16 pl-3.5 text-sm outline-none transition focus:border-accent"
-            />
-            <button
-              type="button"
-              onClick={() => setShow((s) => !s)}
-              className="absolute top-1/2 right-3 -translate-y-1/2 font-mono text-[11px] text-muted hover:text-ink"
-            >
-              {show ? "ocultar" : "mostrar"}
-            </button>
-          </span>
-        </label>
-        {error && <p className="mt-3 text-sm text-bad">{error}</p>}
-        <button
-          disabled={loading}
-          className="mt-6 w-full rounded-full bg-ink py-2.5 text-sm font-medium text-bg transition-colors hover:bg-accent hover:text-accent-ink disabled:opacity-50"
-        >
-          {loading ? "Entrando…" : "Entrar"}
-        </button>
-        <a href="/" className="mt-5 block text-center text-xs text-muted hover:text-ink">← Volver al sitio</a>
+      <form onSubmit={onSubmit} className="relative w-full max-w-sm overflow-hidden rounded-[26px] border border-line bg-surface">
+        <div className="flex items-center justify-between border-b border-line px-6 py-5">
+          <p className="font-bold">Acceso privado</p>
+          <p className="font-mono text-xs text-muted">
+            <span className="mr-1.5 inline-block size-1.5 rounded-full bg-accent align-[1px]" />
+            solo admin
+          </p>
+        </div>
+        <div className="px-6 pt-6 pb-7">
+          <h1 className="text-5xl leading-[0.9] font-extrabold tracking-[-0.05em]">
+            Panel<span className="text-accent">.</span>
+          </h1>
+          <p className="mt-3 text-[15px] text-ink-2">Ingresá tu contraseña de administrador.</p>
+          <label className="mt-7 block">
+            <span className="kicker">Contraseña</span>
+            <span className="relative mt-2 block">
+              <input
+                name="password"
+                type={show ? "text" : "password"}
+                required
+                autoFocus
+                autoComplete="current-password"
+                className="w-full rounded-xl border border-line bg-bg py-3 pr-16 pl-4 text-[15px] outline-none transition focus:border-ink-2"
+              />
+              <button
+                type="button"
+                onClick={() => setShow((s) => !s)}
+                className="absolute top-1/2 right-3 -translate-y-1/2 font-mono text-[11px] text-muted hover:text-ink"
+              >
+                {show ? "ocultar" : "mostrar"}
+              </button>
+            </span>
+          </label>
+          {error && <p className="mt-3 text-sm text-bad">{error}</p>}
+          <button
+            disabled={loading}
+            className="mt-6 w-full rounded-full bg-accent py-3.5 text-[15px] font-semibold text-accent-ink transition-transform active:scale-[0.97] disabled:opacity-50"
+          >
+            {loading ? "Entrando…" : "Entrar"}
+          </button>
+          <a href="/" className="mt-5 block text-center text-sm text-muted hover:text-ink">← Volver al sitio</a>
+        </div>
       </form>
     </main>
   );
